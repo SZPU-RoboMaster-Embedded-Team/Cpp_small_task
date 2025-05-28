@@ -1,5 +1,5 @@
 #include "../Task/call_back.hpp"
-#include "../APP/variables.hpp" 
+#include "../APP/variables.hpp"
 #include "../BSP/Motor/DM/DmMotor.hpp"
 #include "../BSP/Motor/Dji/DjiMotor.hpp"
 
@@ -18,12 +18,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &CAN1_RxHeader, CAN1_RxHeaderData);
     if (hcan == &hcan1)
     {
-        BSP::Motor::Dji::Motor6020.Parse(CAN1_RxHeader, CAN1_RxHeaderData);
-        BSP::Motor::Dji::Motor3508.Parse(CAN1_RxHeader, CAN1_RxHeaderData);
+        // BSP::Motor::Dji::Motor6020.Parse(CAN1_RxHeader, CAN1_RxHeaderData);
+        // BSP::Motor::Dji::Motor3508.Parse(CAN1_RxHeader, CAN1_RxHeaderData);
         BSP::Motor::Dji::Motor2006.Parse(CAN1_RxHeader, CAN1_RxHeaderData);
     }
 }
- // 全局变量
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
@@ -31,7 +30,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     {
         // 处理数据
         if (rx_buf[0] == 0xA1)
-            vofaMotor.setTargetSpeed(*(float*)&rx_buf[1]);
+            vofaMotor.setTargetSpeed(*(float *)&rx_buf[1]);
         else if (rx_buf[0] == 0xA2)
             vofaMotor.setEnableFlag(rx_buf[1]);
 

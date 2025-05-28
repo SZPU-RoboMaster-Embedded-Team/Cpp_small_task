@@ -50,9 +50,9 @@ inline void Can_Init()
     // 设置中断
     HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
     // 开启can
-        // HAL_CAN_Start(&hcan2);
-        // // 设置中断
-        // HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO1_MSG_PENDING);
+    // HAL_CAN_Start(&hcan2);
+    // // 设置中断
+    // HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO1_MSG_PENDING);
 }
 
 // 电机发送数据
@@ -70,11 +70,11 @@ inline void Can_Send(CAN_HandleTypeDef *han, uint32_t StdId, uint8_t *s_data, ui
     TxHeader.StdId = StdId;      // id
     TxHeader.TransmitGlobalTime = DISABLE;
 
-    if (HAL_CAN_GetTxMailboxesFreeLevel(han) != 0)
-    {
+//    if (HAL_CAN_GetTxMailboxesFreeLevel(han) != 0)
+//    {
         // 发送邮箱
         HAL_CAN_AddTxMessage(han, &TxHeader, s_data, &pTxMailbox);
-    }
+    //}
 }
 
 } // namespace CAN::BSP

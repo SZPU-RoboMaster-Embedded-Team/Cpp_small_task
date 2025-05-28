@@ -18,14 +18,15 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "../User/Task/call_back.hpp"
 #include "can.h"
 #include "dma.h"
 #include "gpio.h"
 #include "usart.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "../User/Task/call_back.hpp"
+
+void Init();
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,6 +45,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+
 /* USER CODE BEGIN PV */
 uint8_t rx_buf[8]; // 添加这一行，声明全局接收缓冲区
 /* USER CODE END PV */
@@ -92,8 +94,9 @@ int main(void)
     MX_CAN1_Init();
     MX_USART1_UART_Init();
     MX_USART6_UART_Init();
+
     /* USER CODE BEGIN 2 */
-    //HAL_UART_Receive_IT(&huart6, rx_buf, 5);
+
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -101,9 +104,10 @@ int main(void)
     while (1)
     {
         /* USER CODE END WHILE */
-        Vofa_Motor_Control();
-        HAL_Delay(100);
+
         /* USER CODE BEGIN 3 */
+        Vofa_Motor_Control();
+        HAL_Delay(10);
     }
     /* USER CODE END 3 */
 }

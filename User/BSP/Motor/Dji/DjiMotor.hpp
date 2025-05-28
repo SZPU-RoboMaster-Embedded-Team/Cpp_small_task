@@ -1,4 +1,3 @@
-
 #pragma once
 // 基础DJI电机实现
 #include "../MotorBase.hpp"
