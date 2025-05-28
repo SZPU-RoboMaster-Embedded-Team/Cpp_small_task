@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>2</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -589,11 +589,6 @@
               <FilePath>..\User\BSP\Remote\Key.hpp</FilePath>
             </File>
             <File>
-              <FileName>Vofa_send.hpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\Vofa\Vofa_send.hpp</FilePath>
-            </File>
-            <File>
               <FileName>Init.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\User\BSP\Init.cpp</FilePath>
@@ -612,6 +607,11 @@
               <FileName>stdxxx.hpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\User\BSP\stdxxx.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>Vofa_send.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\BSP\Vofa\Vofa_send.hpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -640,7 +640,7 @@
             </File>
             <File>
               <FileName>variables.hpp</FileName>
-              <FileType>8</FileType>
+              <FileType>5</FileType>
               <FilePath>..\User\APP\variables.hpp</FilePath>
             </File>
           </Files>
@@ -655,7 +655,7 @@
             </File>
             <File>
               <FileName>call_back.hpp</FileName>
-              <FileType>8</FileType>
+              <FileType>5</FileType>
               <FilePath>..\User\Task\call_back.hpp</FilePath>
             </File>
           </Files>
