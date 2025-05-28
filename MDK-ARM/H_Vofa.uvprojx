@@ -329,7 +329,7 @@
             <uGnu>0</uGnu>
             <useXO>0</useXO>
             <v6Lang>3</v6Lang>
-            <v6LangP>9</v6LangP>
+            <v6LangP>8</v6LangP>
             <vShortEn>1</vShortEn>
             <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
@@ -534,16 +534,6 @@
               <FilePath>..\User\BSP\CAN\Bsp_Can.hpp</FilePath>
             </File>
             <File>
-              <FileName>crc.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\CRC\crc.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>crc.hpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\CRC\crc.hpp</FilePath>
-            </File>
-            <File>
               <FileName>DjiMotor.hpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\User\BSP\Motor\Dji\DjiMotor.hpp</FilePath>
@@ -562,31 +552,6 @@
               <FileName>MotorBase.hpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\User\BSP\Motor\MotorBase.hpp</FilePath>
-            </File>
-            <File>
-              <FileName>Dbus.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\Remote\Dbus\Dbus.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Dbus.hpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\Remote\Dbus\Dbus.hpp</FilePath>
-            </File>
-            <File>
-              <FileName>Mini.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\Remote\Mini\Mini.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Mini.hpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\Remote\Mini\Mini.hpp</FilePath>
-            </File>
-            <File>
-              <FileName>Key.hpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\Remote\Key.hpp</FilePath>
             </File>
             <File>
               <FileName>Init.cpp</FileName>

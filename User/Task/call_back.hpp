@@ -6,9 +6,10 @@
 extern "C"
 {
 #endif // __cplusplus
-
-void Vofa_Motor2006_Control(void);
+    extern uint8_t rx_buf[8];
+    void Vofa_Motor_Control(void);
 
 #ifdef __cplusplus
 }
 #endif // __cplusplus
+

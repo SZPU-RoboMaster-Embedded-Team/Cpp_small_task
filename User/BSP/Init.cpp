@@ -1,5 +1,5 @@
 #include "Init.hpp"
-#include "../BSP/Remote/Dbus/Dbus.hpp"
+
 //#include "../BSP/IMU/HI12H3_IMU.hpp"
 #include "../BSP/CAN/Bsp_Can.hpp"
 //#include "tim.h"
@@ -8,7 +8,7 @@ bool InitFlag = false;
 void Init()
 {
     // 初始化
-    BSP::Remote::dr16.Init();
+    //BSP::Remote::dr16.Init();
 // 
     CAN::BSP::Can_Init();
     // BSP::IMU::imu.Init();

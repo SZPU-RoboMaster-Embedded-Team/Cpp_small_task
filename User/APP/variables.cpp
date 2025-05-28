@@ -10,4 +10,4 @@
  */
 #include "variables.hpp"
 
-PID pid_vel_204(8, 0, 0, 0, 16384); // 驱动轮速度环
+PID pid_vel_204(2, 0, 0, 0, 10000); // 驱动轮速度环
