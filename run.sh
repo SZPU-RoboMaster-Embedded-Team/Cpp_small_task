@@ -17,7 +17,7 @@ cd "$BUILD_DIR"
 
 # 运行 Cmake 配置和编译项目
 cmake ..
-make -j 16
+make -j 8
 
 # 根据项目名称生成 ELF，BIN 和 HEX 文件路径
 ELF_FILE="$BUILD_DIR/${PROJECT_NAME}.elf"

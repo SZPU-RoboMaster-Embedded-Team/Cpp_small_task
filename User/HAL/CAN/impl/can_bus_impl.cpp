@@ -1,5 +1,4 @@
 #include "can_bus_impl.hpp"
-#include <stdexcept>
 
 namespace HAL::CAN
 {
@@ -18,12 +17,8 @@ CanBus &CanBus::instance()
 }
 
 CanBus::CanBus()
-    // 初始化CAN1
-    : can1_(&hcan1, 0, CAN_FILTER_FIFO1),
-      // 初始化CAN2
-      can2_(&hcan2, 14, CAN_FILTER_FIFO0),
-      // 初始化标志
-      initialized_(false)
+    // 按照类中声明的顺序初始化成员变量
+    : initialized_(false), devices_{nullptr}, can1_(&hcan1, 0, CAN_FILTER_FIFO1), can2_(&hcan2, 14, CAN_FILTER_FIFO0)
 {
     // 注册现有的设备
     register_device(CanDeviceId::HAL_Can1, &can1_);
@@ -60,6 +55,9 @@ ICanDevice &CanBus::get_device(CanDeviceId id)
     {
         return *devices_[(size_t)id];
     }
+
+    // 如果没有可用设备，返回can1_（保证永远有返回值）
+    return can1_;
 }
 
 bool CanBus::has_device(CanDeviceId id) const
