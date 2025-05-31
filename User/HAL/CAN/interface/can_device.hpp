@@ -13,7 +13,9 @@ struct Frame
     uint8_t data[8];
     ID_t id;
     uint8_t dlc;
+    // 是否是扩展ID
     bool is_extended_id;
+    // 是否是远程帧
     bool is_remote_frame;
 };
 

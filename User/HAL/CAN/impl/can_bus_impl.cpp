@@ -17,7 +17,13 @@ CanBus &CanBus::instance()
     return instance;
 }
 
-CanBus::CanBus() : can1_(&hcan1, 0, CAN_FILTER_FIFO0), can2_(&hcan2, 14, CAN_FILTER_FIFO1), initialized_(false)
+CanBus::CanBus()
+    // 初始化CAN1
+    : can1_(&hcan1, 0, CAN_FILTER_FIFO1),
+      // 初始化CAN2
+      can2_(&hcan2, 14, CAN_FILTER_FIFO0),
+      // 初始化标志
+      initialized_(false)
 {
     // 注册现有的设备
     register_device(CanDeviceId::HAL_Can1, &can1_);

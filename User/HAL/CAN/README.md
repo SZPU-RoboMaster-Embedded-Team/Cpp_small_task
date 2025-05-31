@@ -85,32 +85,33 @@ if (can_bus.has_device(HAL::CAN::CanDeviceId::HAL_Can3)) {
 
 ```cpp
 // CAN1 接收中断回调
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
-    auto& can_bus = HAL::CAN::get_can_bus_instance();
-    
-    if (hcan == can_bus.get_can1().get_handle()) {
-        HAL::CAN::Frame rx_frame;
-        if (can_bus.get_can1().receive(rx_frame)) {
-            // 处理接收到的数据
-            if (rx_frame.id == 0x201) {
-                // 处理ID为0x201的数据
-                // ...
-            }
-        }
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+    // 获取单例
+    auto &can_bus = HAL::CAN::get_can_bus_instance();
+    // 获取CAN1的句柄
+    HAL::CAN::Frame rx_frame;
+
+    // 接收CAN1的消息
+    if (hcan == can_bus.get_can1().get_handle())
+    {
+        can_bus.get_can1().receive(rx_frame);
     }
 }
 
+
 // 使用设备ID方式
-void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
-    auto& can_bus = HAL::CAN::get_can_bus_instance();
-    
-    if (can_bus.has_device(HAL::CAN::CanDeviceId::HAL_Can2) && 
-        hcan == can_bus.get_device(HAL::CAN::CanDeviceId::HAL_Can2).get_handle()) {
-        HAL::CAN::Frame rx_frame;
-        if (can_bus.get_device(HAL::CAN::CanDeviceId::HAL_Can2).receive(rx_frame)) {
-            // 处理接收到的数据
-            // ...
-        }
+void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+    // 获取单例
+    auto &can_bus = HAL::CAN::get_can_bus_instance();
+    // 获取CAN1的句柄
+    HAL::CAN::Frame rx_frame;
+
+    // 接收CAN1的消息
+    if (hcan == can_bus.get_can1().get_handle())
+    {
+        can_bus.get_can2().receive(rx_frame);
     }
 }
 ```
