@@ -20,12 +20,12 @@ class CanBus : public ICanBus
     ICanDevice &get_device(CanDeviceId id) override;
     bool has_device(CanDeviceId id) const override;
 
+    // 初始化CAN总线（私有，由instance()调用）
+    void init();
+
   private:
     // 私有构造函数（单例模式）
     CanBus();
-
-    // 初始化CAN总线（私有，由instance()调用）
-    void init();
 
     // 注册一个CAN设备
     void register_device(CanDeviceId id, CanDevice *device);

@@ -54,9 +54,6 @@ ICanDevice &CanBus::get_device(CanDeviceId id)
     {
         return *devices_[(size_t)id];
     }
-
-    // 如果设备不存在，抛出异常
-    throw std::runtime_error("CAN设备不存在");
 }
 
 bool CanBus::has_device(CanDeviceId id) const
