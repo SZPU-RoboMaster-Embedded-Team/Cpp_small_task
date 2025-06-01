@@ -45,20 +45,8 @@ class IUartDevice
     // 设置DMA连续接收并使用空闲中断检测
     virtual bool receive_dma_idle(Data &data) = 0;
 
-    // 启用UART空闲中断
-    virtual void enable_idle_interrupt() = 0;
-
-    // 禁用UART空闲中断
-    virtual void disable_idle_interrupt() = 0;
-
-    // 检查是否为空闲中断
-    virtual bool is_idle_interrupt() = 0;
-
-    // 清除空闲中断标志
-    virtual void clear_idle_flag() = 0;
-
-    // 停止DMA传输
-    virtual void abort_dma() = 0;
+    // 清除ORE错误并重新启动DMA接收
+    virtual void clear_ore_error(Data &data) = 0;
 
     // 获取UART句柄
     virtual UART_HandleTypeDef *get_handle() const = 0;

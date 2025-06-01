@@ -28,11 +28,8 @@ class UartDevice : public IUartDevice
     bool transmit_dma(const Data &data) override;
     bool receive_dma(Data &data) override;
     bool receive_dma_idle(Data &data) override;
-    void enable_idle_interrupt() override;
-    void disable_idle_interrupt() override;
-    bool is_idle_interrupt() override;
-    void clear_idle_flag() override;
-    void abort_dma() override;
+    void clear_ore_error(Data &data) override;
+
     UART_HandleTypeDef *get_handle() const override;
 
   private:

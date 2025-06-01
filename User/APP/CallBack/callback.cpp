@@ -1,12 +1,19 @@
 #include "User/HAL/CAN/can_hal.hpp"
+#include "User/HAL/UART/uart_hal.hpp"
 #include <cstring>
+
+uint8_t buffer[3] = {0};
+auto uatr_rx_frame = HAL::UART::Data{buffer, 3};
 
 extern "C"
 {
     void Init()
     {
-        auto &can_bus = HAL::CAN::get_can_bus_instance();
-        can_bus.get_can1().init();
+        HAL::CAN::get_can_bus_instance();
+
+        auto &uart1 = HAL::UART::get_uart_bus_instance().get_device(HAL::UART::UartDeviceId::HAL_Uart1);
+        uart1.receive_dma_idle(uatr_rx_frame);
+        uart1.transmit(uatr_rx_frame);
     }
 } // extern "C"
 
@@ -49,4 +56,16 @@ void send(uint32_t id, uint8_t *data)
     std::memcpy(tx_frame.data, data, 8);
 
     can_bus.get_can1().send(tx_frame);
+}
+
+// UART中断
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+    auto &uart1 = HAL::UART::get_uart_bus_instance().get_device(HAL::UART::UartDeviceId::HAL_Uart1);
+
+    if (huart == uart1.get_handle())
+    {
+        uart1.transmit(uatr_rx_frame);
+    }
+    uart1.receive_dma_idle(uatr_rx_frame);
 }

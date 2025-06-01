@@ -30,7 +30,7 @@ class UartBus : public IUartBus
     void register_device(UartDeviceId id, UartDevice *device);
 
     // 是否已初始化标志
-    bool initialized_;
+    bool initialized_ = false;
 
     // 禁止拷贝构造和赋值操作
     UartBus(const UartBus &) = delete;

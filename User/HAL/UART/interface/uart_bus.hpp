@@ -24,20 +24,6 @@ class IUartBus
     // 获取指定ID的UART设备
     virtual IUartDevice &get_device(UartDeviceId id) = 0;
 
-    // 便捷方法
-    IUartDevice &get_uart1()
-    {
-        return get_device(UartDeviceId::HAL_Uart1);
-    }
-    IUartDevice &get_uart3()
-    {
-        return get_device(UartDeviceId::HAL_Uart3);
-    }
-    IUartDevice &get_uart6()
-    {
-        return get_device(UartDeviceId::HAL_Uart6);
-    }
-
     // 检查指定ID的设备是否存在
     virtual bool has_device(UartDeviceId id) const = 0;
 };

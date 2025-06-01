@@ -40,15 +40,10 @@ bool UartDevice::receive(Data &data)
         return false;
     }
 
-    if (is_receiving_)
-    {
-        return false; // 已经在接收中
-    }
-
     HAL_StatusTypeDef status = HAL_UART_Receive_IT(handle_, data.buffer, data.size);
+
     if (status == HAL_OK)
     {
-        is_receiving_ = true;
         return true;
     }
     return false;
@@ -73,15 +68,9 @@ bool UartDevice::transmit_dma(const Data &data)
         return false;
     }
 
-    if (is_dma_tx_ongoing_)
-    {
-        return false; // DMA发送已经在进行中
-    }
-
     HAL_StatusTypeDef status = HAL_UART_Transmit_DMA(handle_, data.buffer, data.size);
     if (status == HAL_OK)
     {
-        is_dma_tx_ongoing_ = true;
         return true;
     }
     return false;
@@ -94,15 +83,9 @@ bool UartDevice::receive_dma(Data &data)
         return false;
     }
 
-    if (is_dma_rx_ongoing_)
-    {
-        return false; // DMA接收已经在进行中
-    }
-
     HAL_StatusTypeDef status = HAL_UART_Receive_DMA(handle_, data.buffer, data.size);
     if (status == HAL_OK)
     {
-        is_dma_rx_ongoing_ = true;
         return true;
     }
     return false;
@@ -110,49 +93,25 @@ bool UartDevice::receive_dma(Data &data)
 
 bool UartDevice::receive_dma_idle(Data &data)
 {
-    // 启动DMA连续接收
-    if (receive_dma(data))
+    if (data.buffer == nullptr || data.size == 0)
     {
-        // 启用空闲中断检测
-        enable_idle_interrupt();
+        return false;
+    }
+
+    HAL_StatusTypeDef status = HAL_UARTEx_ReceiveToIdle_DMA(handle_, data.buffer, data.size);
+    if (status == HAL_OK)
+    {
         return true;
     }
     return false;
 }
 
-void UartDevice::enable_idle_interrupt()
+void UartDevice::clear_ore_error(Data &data)
 {
-    // 启用UART的IDLE中断
-    __HAL_UART_ENABLE_IT(handle_, UART_IT_IDLE);
-    is_idle_enabled_ = true;
-}
-
-void UartDevice::disable_idle_interrupt()
-{
-    // 禁用UART的IDLE中断
-    __HAL_UART_DISABLE_IT(handle_, UART_IT_IDLE);
-    is_idle_enabled_ = false;
-}
-
-bool UartDevice::is_idle_interrupt()
-{
-    // 检查是否发生IDLE中断
-    return __HAL_UART_GET_FLAG(handle_, UART_FLAG_IDLE) != RESET;
-}
-
-void UartDevice::clear_idle_flag()
-{
-    // 清除IDLE标志位
-    __HAL_UART_CLEAR_IDLEFLAG(handle_);
-}
-
-void UartDevice::abort_dma()
-{
-    if (is_dma_tx_ongoing_ || is_dma_rx_ongoing_)
+    if (__HAL_UART_GET_FLAG(handle_, UART_FLAG_ORE) != RESET)
     {
-        HAL_UART_DMAStop(handle_);
-        is_dma_tx_ongoing_ = false;
-        is_dma_rx_ongoing_ = false;
+        __HAL_UART_CLEAR_OREFLAG(handle_);
+        HAL_UARTEx_ReceiveToIdle_DMA(handle_, data.buffer, data.size);
     }
 }
 

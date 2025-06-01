@@ -31,7 +31,7 @@ class CanBus : public ICanBus
     void register_device(CanDeviceId id, CanDevice *device);
 
     // 是否已初始化标志
-    bool initialized_;
+    bool initialized_ = false;
 
     // 禁止拷贝构造和赋值操作
     CanBus(const CanBus &) = delete;

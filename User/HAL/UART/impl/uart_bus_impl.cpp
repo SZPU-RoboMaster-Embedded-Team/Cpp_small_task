@@ -17,8 +17,12 @@ UartBus &UartBus::instance()
 }
 
 UartBus::UartBus()
-    // 按照头文件中声明的顺序初始化
-    : initialized_(false), devices_{nullptr}, uart1_(&huart1), uart3_(&huart3), uart6_(&huart6)
+    // 初始化串口1
+    : uart1_(&huart1),
+      // 初始化串口3
+      uart3_(&huart3),
+      // 初始化串口6
+      uart6_(&huart6)
 {
     // 注册现有的设备
     register_device(UartDeviceId::HAL_Uart1, &uart1_);
