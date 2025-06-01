@@ -1,5 +1,5 @@
 #pragma once
-#include "User/HAL/CAN/can_hal.hpp"
+#include "../interface/can_bus.hpp"
 #include "can_device_impl.hpp"
 #include <unordered_map>
 

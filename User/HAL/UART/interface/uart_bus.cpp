@@ -1,5 +1,5 @@
 #include "uart_bus.hpp"
-#include "User/BSP/UART_BSP/uart_bus_impl.hpp"
+#include "../impl/uart_bus_impl.hpp"
 
 namespace HAL::UART
 {
