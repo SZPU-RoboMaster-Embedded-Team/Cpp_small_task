@@ -214,6 +214,14 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
 
         return is_dir;
     }
+    uint32_t getSendIdx() const
+    {
+        return send_idxs_;
+    }
+    const uint8_t *getSendData() const
+    {
+        return msd.Data;
+    }
 };
 
 /**

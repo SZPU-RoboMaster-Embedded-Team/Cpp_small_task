@@ -1,15 +1,15 @@
 #pragma once
 #include "../../APP/variables.hpp"
+#include "../CAN_BSP/can_bus_impl.hpp"
+#include "../UART_BSP/uart_bus_impl.hpp"
 #include "../Motor/Dji/DjiMotor.hpp"
-#include "stm32f4xx_hal.h"
-#include "usart.h"
 #include <string.h>
 
 class VofaMotorController
 {
   public:
-    VofaMotorController(UART_HandleTypeDef *uart, BSP::Motor::Dji::DjiMotorBase<1> *motor, PID &pid)
-        : huart(uart), motor(motor), pid_ctrl(pid), target_speed(0), enable_flag(0), time_axis(0),
+    VofaMotorController(HAL::UART::IUartDevice *uart, BSP::Motor::Dji::DjiMotorBase<1> *motor, PID &pid)
+        : uart_dev(uart), motor(motor), pid_ctrl(pid), target_speed(0), enable_flag(0), time_axis(0),
           last_tick(HAL_GetTick())
     {
         memset(send_buf, 0, sizeof(send_buf));
@@ -29,20 +29,26 @@ class VofaMotorController
         float freq = (feedback.velocity_Rpm / 60.0f) / 36.0f * 9.0f;
         send(feedback.angle_Deg, feedback.velocity_Rpm, time_axis, freq, 0, 0);
 
+        // CAN控制
+        float pid_output = 0;
         if (enable_flag == 0x01)
-        {
-            float pid_output = pid_ctrl.compute(target_speed, feedback.velocity_Rpm);
-            motor->setCAN((int16_t)pid_output, 1);
-            motor->sendCAN(&hcan1);
-        }
+            pid_output = pid_ctrl.compute(target_speed, feedback.velocity_Rpm);
         else
-        {
-            motor->setCAN(0, 1);
-            motor->sendCAN(&hcan1);
-        }
+            pid_output = 0;
+        motor->setCAN((int16_t)pid_output, 1);
+
+        // 构造CAN帧
+        HAL::CAN::Frame frame;
+        frame.id = motor->getSendIdx();
+        frame.dlc = 8;
+        frame.is_extended_id = false;
+        frame.is_remote_frame = false;
+        memcpy(frame.data, motor->getSendData(), 8);
+
+        // 通过BSP发送
+        HAL::CAN::CanBus::instance().get_device(HAL::CAN::CanDeviceId::HAL_Can1).send(frame);
     }
 
-    // 可扩展接口
     float getTargetSpeed() const
     {
         return target_speed;
@@ -70,22 +76,12 @@ class VofaMotorController
         *((float *)&send_buf[16]) = x5;
         *((float *)&send_buf[20]) = x6;
         *((uint32_t *)&send_buf[24]) = 0x7f800000;
-        HAL_UART_Transmit_DMA(huart, send_buf, 28);
+
+        HAL::UART::Data data{send_buf, 28};
+        uart_dev->transmit_dma(data);
     }
 
-    void recv()
-    {
-        uint8_t rx_buf[8];
-        if (HAL_UART_Receive(huart, rx_buf, 5, 10) == HAL_OK)
-        {
-            if (rx_buf[0] == 0xA1)
-                memcpy(&target_speed, &rx_buf[1], 4);
-            else if (rx_buf[0] == 0xA2)
-                enable_flag = rx_buf[1];
-        }
-    }
-
-    UART_HandleTypeDef *huart;
+    HAL::UART::IUartDevice *uart_dev;
     BSP::Motor::Dji::DjiMotorBase<1> *motor;
     PID &pid_ctrl;
     uint8_t send_buf[32];

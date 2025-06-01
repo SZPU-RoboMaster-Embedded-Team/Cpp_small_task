@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "../User/BSP/Init.hpp"
 #include "../User/Task/call_back.hpp"
 #include "can.h"
 #include "dma.h"
@@ -26,7 +27,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-void Init();
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,7 +47,7 @@ void Init();
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint8_t rx_buf[8]; // 添加这一行，声明全局接收缓冲区
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -96,7 +96,7 @@ int main(void)
     MX_USART6_UART_Init();
 
     /* USER CODE BEGIN 2 */
-
+    Init();
     /* USER CODE END 2 */
 
     /* Infinite loop */

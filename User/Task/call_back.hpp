@@ -3,7 +3,7 @@
 #include "usart.h"
 
 #ifdef __cplusplus
-extern "C"
+extern "C" 
 {
 #endif // __cplusplus
     extern uint8_t rx_buf[8];
