@@ -123,9 +123,9 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
      * @param han           Can句柄
      * @param pTxMailbox    邮箱
      */
-    void sendCAN(CAN_HandleTypeDef *han, uint32_t pTxMailbox)
+    void sendCAN(CAN_HandleTypeDef *han)
     {
-        CAN::BSP::Can_Send(han, send_idxs_, msd.Data, pTxMailbox);
+        CAN::BSP::Can_Send(han, send_idxs_, msd.Data);
     }
 
   protected:

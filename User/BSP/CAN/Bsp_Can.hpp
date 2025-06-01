@@ -60,7 +60,7 @@ typedef struct
 {
     uint8_t Data[8];
 } send_data;
-inline void Can_Send(CAN_HandleTypeDef *han, uint32_t StdId, uint8_t *s_data, uint32_t pTxMailbox)
+inline void Can_Send(CAN_HandleTypeDef *han, uint32_t StdId, uint8_t *s_data)
 {
     CAN_TxHeaderTypeDef TxHeader;
     TxHeader.DLC = 8;            // 长度
@@ -69,12 +69,8 @@ inline void Can_Send(CAN_HandleTypeDef *han, uint32_t StdId, uint8_t *s_data, ui
     TxHeader.RTR = CAN_RTR_DATA; // 数据帧
     TxHeader.StdId = StdId;      // id
     TxHeader.TransmitGlobalTime = DISABLE;
-
-//    if (HAL_CAN_GetTxMailboxesFreeLevel(han) != 0)
-//    {
-        // 发送邮箱
-        HAL_CAN_AddTxMessage(han, &TxHeader, s_data, &pTxMailbox);
-    //}
+    uint32_t mailbox;
+    HAL_CAN_AddTxMessage(han, &TxHeader, s_data, &mailbox);
 }
 
 } // namespace CAN::BSP

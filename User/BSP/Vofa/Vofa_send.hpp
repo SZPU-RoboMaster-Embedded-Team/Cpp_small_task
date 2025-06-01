@@ -32,13 +32,13 @@ class VofaMotorController
         if (enable_flag == 0x01)
         {
             float pid_output = pid_ctrl.compute(target_speed, feedback.velocity_Rpm);
-            motor->setCAN((int16_t)pid_output, 4);
-            motor->sendCAN(&hcan1, 0);
+            motor->setCAN((int16_t)pid_output, 1);
+            motor->sendCAN(&hcan1);
         }
         else
         {
-            motor->setCAN(0, 4);
-            motor->sendCAN(&hcan1, 0);
+            motor->setCAN(0, 1);
+            motor->sendCAN(&hcan1);
         }
     }
 
