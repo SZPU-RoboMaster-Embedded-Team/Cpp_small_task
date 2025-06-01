@@ -1,5 +1,5 @@
 #pragma once
-#include "../interface/uart_device.hpp"
+#include "User/HAL/UART/uart_hal.hpp"
 
 namespace HAL::UART
 {

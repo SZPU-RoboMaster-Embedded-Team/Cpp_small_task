@@ -1,5 +1,5 @@
 #pragma once
-#include "../interface/can_device.hpp"
+#include "User/HAL/CAN/can_hal.hpp"
 
 namespace HAL::CAN
 {

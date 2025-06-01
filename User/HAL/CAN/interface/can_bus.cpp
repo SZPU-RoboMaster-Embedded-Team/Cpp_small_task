@@ -1,5 +1,5 @@
 #include "can_bus.hpp"
-#include "../impl/can_bus_impl.hpp"
+#include "User/BSP/CAN_BSP/can_bus_impl.hpp"
 
 namespace HAL::CAN
 {
