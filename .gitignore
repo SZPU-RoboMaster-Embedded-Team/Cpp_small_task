@@ -1,10 +1,4 @@
-
 build/
-MDK-ARM/H_Vofa/
-MDK-ARM/EIDE/
-MDK-ARM/*.uvoptx
-MDK-ARM/*.uvguix.*
 .vs/
 .vscode/
-CppProperties.json
 *.o
