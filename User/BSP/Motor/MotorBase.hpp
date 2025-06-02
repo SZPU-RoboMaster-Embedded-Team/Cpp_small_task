@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../CAN/Bsp_Can.hpp"
+
 #include "../StaticTime.hpp"
 
 namespace BSP::Motor

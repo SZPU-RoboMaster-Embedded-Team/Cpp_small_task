@@ -1,8 +1,8 @@
 #pragma once
 #include "../../APP/variables.hpp"
 #include "../CAN_BSP/can_bus_impl.hpp"
-#include "../UART_BSP/uart_bus_impl.hpp"
 #include "../Motor/Dji/DjiMotor.hpp"
+#include "../UART_BSP/uart_bus_impl.hpp"
 #include <string.h>
 
 class VofaMotorController
@@ -35,18 +35,21 @@ class VofaMotorController
             pid_output = pid_ctrl.compute(target_speed, feedback.velocity_Rpm);
         else
             pid_output = 0;
-        motor->setCAN((int16_t)pid_output, 1);
+        motor->setCAN((int16_t)pid_output, 4);
 
-        // 构造CAN帧
-        HAL::CAN::Frame frame;
-        frame.id = motor->getSendIdx();
-        frame.dlc = 8;
-        frame.is_extended_id = false;
-        frame.is_remote_frame = false;
-        memcpy(frame.data, motor->getSendData(), 8);
+//        // 构造CAN帧
+//        HAL::CAN::Frame frame;
+//        frame.id = motor->getSendIdx(); // 用电机对象的send_idxs_成员
+//        frame.dlc = 8;
+//        frame.is_extended_id = false;
+//        frame.is_remote_frame = false;
+//        memcpy(frame.data, motor->getSendData(), 8);
+//		auto& can1 = HAL::CAN::CanBus::instance().get_device(HAL::CAN::CanDeviceId::HAL_Can1);
 
+		motor->sendCAN();
+		
         // 通过BSP发送
-        HAL::CAN::CanBus::instance().get_device(HAL::CAN::CanDeviceId::HAL_Can1).send(frame);
+//        can1.send(can1);
     }
 
     float getTargetSpeed() const

@@ -5,7 +5,7 @@ namespace HAL::CAN
 
 // CanDevice实现
 CanDevice::CanDevice(CAN_HandleTypeDef *handle, uint32_t filter_bank, uint32_t fifo)
-    : handle_(handle), filter_bank_(filter_bank), fifo_(fifo), mailbox_(0)
+    : handle_(handle), filter_bank_(filter_bank), fifo_(fifo), mailbox_(1)
 {
 }
 
@@ -31,10 +31,10 @@ void CanDevice::start()
 
 bool CanDevice::send(const Frame &frame)
 {
-    if (HAL_CAN_GetTxMailboxesFreeLevel(handle_) == 0)
-    {
-        return false;
-    }
+//    if (HAL_CAN_GetTxMailboxesFreeLevel(handle_) == 0)
+//    {
+//        return false;
+//    }
 
     CAN_TxHeaderTypeDef tx_header;
     tx_header.DLC = frame.dlc;
@@ -54,7 +54,10 @@ bool CanDevice::send(const Frame &frame)
 
     tx_header.TransmitGlobalTime = DISABLE;
 
-    if (HAL_CAN_AddTxMessage(handle_, &tx_header, const_cast<uint8_t *>(frame.data), &mailbox_) != HAL_OK)
+	if (HAL_CAN_GetTxMailboxesFreeLevel(handle_) == 0)
+		return false;
+
+    if (HAL_CAN_AddTxMessage(handle_, &tx_header, const_cast<uint8_t *>(frame.data), 0) != HAL_OK)
     {
         return false;
     }
@@ -104,7 +107,7 @@ void CanDevice::configure_filter()
     filter.FilterScale = CAN_FILTERSCALE_32BIT;
     filter.SlaveStartFilterBank = 14;
 
-    HAL_CAN_ConfigFilter(handle_, &filter);
+    HAL_CAN_ConfigFilter(&hcan1, &filter);
 }
 
 } // namespace HAL::CAN
