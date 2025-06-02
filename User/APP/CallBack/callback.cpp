@@ -1,9 +1,12 @@
+#include "User/BSP/Common/StateWatch/state_watch.hpp"
 #include "User/HAL/CAN/can_hal.hpp"
 #include "User/HAL/UART/uart_hal.hpp"
 #include <cstring>
 
 uint8_t buffer[3] = {0};
 auto uatr_rx_frame = HAL::UART::Data{buffer, 3};
+
+auto device_monitor = BSP::WATCH_STATE::StateWatch("CAN1", 200);
 
 extern "C"
 {
@@ -14,6 +17,11 @@ extern "C"
         auto &uart1 = HAL::UART::get_uart_bus_instance().get_device(HAL::UART::UartDeviceId::HAL_Uart1);
         uart1.receive_dma_idle(uatr_rx_frame);
         uart1.transmit(uatr_rx_frame);
+    }
+
+    void InWhile()
+    {
+        device_monitor.check();
     }
 } // extern "C"
 
@@ -26,6 +34,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
     // 获取单例
     auto &can_bus = HAL::CAN::get_can_bus_instance();
+    // 参数：设备名称，超时时间(毫秒)
     // 获取CAN1的句柄
     HAL::CAN::Frame rx_frame;
 
@@ -33,6 +42,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
     if (hcan == can_bus.get_can1().get_handle())
     {
         can_bus.get_can1().receive(rx_frame);
+        device_monitor.updateTimestamp();
     }
 
     // 设置发送消息
