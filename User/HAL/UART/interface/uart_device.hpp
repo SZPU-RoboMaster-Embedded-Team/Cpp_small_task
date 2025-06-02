@@ -1,3 +1,14 @@
+/**
+ * @file uart_device.hpp
+ * @author 竹节虫 (k.yixiang@qq.com)
+ * @brief UART设备抽象接口
+ * @version 0.0.1
+ * @date 2025-06-03
+ *
+ * @copyright SZPU-RCIA (c) 2025
+ *
+ */
+
 #pragma once
 #include "main.h"  // 包含STM32 HAL的主头文件
 #include "usart.h" // 包含UART相关定义

@@ -1,11 +1,15 @@
 /**
- * @file device_online_detector.hpp
- * @brief 设备在线检测HAL层库 (C++版本)
- * @details 用于检测设备是否在线，当特定数据在设定的时间内未更新时，判定设备断联
+ * @file state_watch.hpp
+ * @author 竹节虫 (k.yixiang@qq.com)
+ * @brief 设备在线检测HAL层库
+ * @version 0.0.1
+ * @date 2025-06-03
+ *
+ * @copyright SZPU-RCIA (c) 2025
+ *
  */
 
-#ifndef DEVICE_ONLINE_DETECTOR_HPP
-#define DEVICE_ONLINE_DETECTOR_HPP
+#pragma once
 
 #include "main.h"
 #include <cstdint>
@@ -123,5 +127,3 @@ class StateWatch
 };
 
 } // namespace BSP::WATCH_STATE
-
-#endif /* DEVICE_ONLINE_DETECTOR_HPP */
