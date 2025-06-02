@@ -1,5 +1,6 @@
 #include "User/BSP/Common/StateWatch/state_watch.hpp"
 #include "User/HAL/CAN/can_hal.hpp"
+#include "User/HAL/LOGGER/logger.hpp"
 #include "User/HAL/UART/uart_hal.hpp"
 #include <cstring>
 
@@ -51,6 +52,9 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
     // 发送消息
     send(0X1FE, data);
+
+    auto &log = HAL::LOGGER::Logger::getInstance();
+    log.printf("CAN1: %d\n", speed);
 }
 
 void send(uint32_t id, uint8_t *data)
