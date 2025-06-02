@@ -18,12 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "../User/BSP/Init.hpp"
-#include "../User/Task/call_back.hpp"
 #include "can.h"
 #include "dma.h"
 #include "gpio.h"
 #include "usart.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -53,7 +52,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void Init();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -92,11 +91,13 @@ int main(void)
     MX_GPIO_Init();
     MX_DMA_Init();
     MX_CAN1_Init();
+    HAL_CAN_Start(&hcan1);
+    HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
     MX_USART1_UART_Init();
     MX_USART6_UART_Init();
-
     /* USER CODE BEGIN 2 */
     Init();
+
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -107,7 +108,7 @@ int main(void)
 
         /* USER CODE BEGIN 3 */
         Vofa_Motor_Control();
-        HAL_Delay(10);
+        HAL_Delay(1);
     }
     /* USER CODE END 3 */
 }

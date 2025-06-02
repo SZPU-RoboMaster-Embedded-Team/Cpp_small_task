@@ -13,7 +13,7 @@ auto &uart6_dev = HAL::UART::UartBus::instance().get_device(HAL::UART::UartDevic
 // vofa控制器
 VofaMotorController vofaMotor(&uart6_dev, &BSP::Motor::Dji::Motor2006, pid_vel_204);
 
-// CAN接收回调（由HAL库调用，但只做数据转发）
+// CAN接收回调
 CAN_RxHeaderTypeDef CAN1_RxHeader;
 uint8_t CAN1_RxHeaderData[8] = {0};
 
@@ -21,13 +21,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
     // 只做数据转发，解析交给Motor
     HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &CAN1_RxHeader, CAN1_RxHeaderData);
-    if (hcan == &hcan1)
-    {
+//    if (hcan == &hcan1)
+//    {
         BSP::Motor::Dji::Motor2006.Parse(CAN1_RxHeader, CAN1_RxHeaderData);
-    }
+    //}
 }
 
-// UART接收回调（由HAL库调用，但只做数据转发）
+// UART接收回调
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart == &huart6)
