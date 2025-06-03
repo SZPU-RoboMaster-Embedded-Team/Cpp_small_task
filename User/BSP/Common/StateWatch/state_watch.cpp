@@ -15,20 +15,9 @@ uint32_t StateWatch::getSystemTimeMs()
     return HAL_GetTick();
 }
 
-StateWatch::StateWatch(const char *name, uint32_t timeout_ms)
+StateWatch::StateWatch(uint32_t timeout_ms)
     : timeout_ms_(timeout_ms), last_update_time_(getSystemTimeMs()), status_(Status::OFFLINE)
 {
-
-    // 复制设备名称，确保不会溢出
-    if (name != nullptr)
-    {
-        strncpy(name_, name, MAX_NAME_LENGTH - 1);
-        name_[MAX_NAME_LENGTH - 1] = '\0'; // 确保字符串结束符
-    }
-    else
-    {
-        strcpy(name_, "Unknown");
-    }
 }
 
 void StateWatch::updateTimestamp()
