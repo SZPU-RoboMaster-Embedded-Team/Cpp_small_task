@@ -21,8 +21,8 @@ namespace BSP::WATCH_STATE
  */
 enum class Status
 {
-    OFFLINE = 0, // 设备离线
-    ONLINE = 1   // 设备在线
+    OFFLINE = 1, // 设备离线
+    ONLINE = 0   // 设备在线
 };
 /**
  * @brief 设备在线检测类
