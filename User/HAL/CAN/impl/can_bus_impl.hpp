@@ -1,3 +1,14 @@
+/**
+ * @file can_bus_impl.hpp
+ * @author 竹节虫 (k.yixiang@qq.com)
+ * @brief CAN总线HAL层
+ * @version 0.0.1
+ * @date 2025-06-03
+ *
+ * @copyright SZPU-RCIA (c) 2025
+ *
+ */
+
 #pragma once
 #include "../interface/can_bus.hpp"
 #include "can_device_impl.hpp"

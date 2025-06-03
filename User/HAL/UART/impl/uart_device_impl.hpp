@@ -1,3 +1,14 @@
+/**
+ * @file uart_device_impl.hpp
+ * @author 竹节虫 (k.yixiang@qq.com)
+ * @brief UART设备HAL层实现
+ * @version 0.0.1
+ * @date 2025-06-03
+ *
+ * @copyright SZPU-RCIA (c) 2025
+ *
+ */
+
 #pragma once
 #include "../interface/uart_device.hpp"
 
