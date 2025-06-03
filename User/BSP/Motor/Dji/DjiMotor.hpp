@@ -121,11 +121,9 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
      *
      * @param pTxMailbox    邮箱
      */
-    void sendCAN()
+    void sendCAN(HAL::CAN::ICanDevice *can)
     {
-        auto &can = HAL::CAN::get_can_bus_instance().get_device(HAL::CAN::CanDeviceId::HAL_Can1);
-
-        can.send(tx_frame); // 发送数据
+        can->send(tx_frame); // 发送数据
     }
 
   protected:

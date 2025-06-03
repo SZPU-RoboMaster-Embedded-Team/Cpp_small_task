@@ -117,7 +117,7 @@ class Logger
         va_end(args);
 
         // 打印换行和颜色重置
-        int resetLen = SEGGER_RTT_printf(0, "\r\n%s", ColorCode::RESET);
+        int resetLen = SEGGER_RTT_printf(0, "\n%s", ColorCode::RESET);
 
         return prefixLen + contentLen + resetLen;
     }
@@ -135,7 +135,7 @@ class Logger
         int prefixLen = SEGGER_RTT_printf(0, "%s[%u ms]%s", colorCode, timestamp, prefix);
 
         int contentLen = SEGGER_RTT_vprintf(0, fmt, &args);
-        int resetLen = SEGGER_RTT_printf(0, "%s", ColorCode::RESET);
+        int resetLen = SEGGER_RTT_printf(0, "\n%s", ColorCode::RESET);
 
         va_end(args);
         return prefixLen + contentLen + resetLen;
@@ -153,7 +153,7 @@ class Logger
 
         int prefixLen = SEGGER_RTT_printf(0, "%s[%u ms]%s", colorCode, timestamp, prefix);
         int contentLen = SEGGER_RTT_vprintf(0, fmt, &args);
-        int resetLen = SEGGER_RTT_printf(0, "%s", ColorCode::RESET);
+        int resetLen = SEGGER_RTT_printf(0, "\n%s", ColorCode::RESET);
 
         va_end(args);
         return prefixLen + contentLen + resetLen;
@@ -170,7 +170,7 @@ class Logger
 
         int prefixLen = SEGGER_RTT_printf(0, "%s[%u ms]%s", colorCode, timestamp, prefix);
         int contentLen = SEGGER_RTT_vprintf(0, fmt, &args);
-        int resetLen = SEGGER_RTT_printf(0, "%s", ColorCode::RESET);
+        int resetLen = SEGGER_RTT_printf(0, "\n%s", ColorCode::RESET);
 
         va_end(args);
         return prefixLen + contentLen + resetLen;
@@ -188,7 +188,7 @@ class Logger
 
         int prefixLen = SEGGER_RTT_printf(0, "%s[%u ms]%s", colorCode, timestamp, prefix);
         int contentLen = SEGGER_RTT_vprintf(0, fmt, &args);
-        int resetLen = SEGGER_RTT_printf(0, "%s", ColorCode::RESET);
+        int resetLen = SEGGER_RTT_printf(0, "\n%s", ColorCode::RESET);
 
         va_end(args);
         return prefixLen + contentLen + resetLen;
@@ -206,7 +206,7 @@ class Logger
 
         int prefixLen = SEGGER_RTT_printf(0, "%s[%u ms]%s", colorCode, timestamp, prefix);
         int contentLen = SEGGER_RTT_vprintf(0, fmt, &args);
-        int resetLen = SEGGER_RTT_printf(0, "%s", ColorCode::RESET);
+        int resetLen = SEGGER_RTT_printf(0, "\n%s", ColorCode::RESET);
 
         va_end(args);
         return prefixLen + contentLen + resetLen;
