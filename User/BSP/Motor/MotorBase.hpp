@@ -1,7 +1,8 @@
+
 #pragma once
 
 
-#include "../StaticTime.hpp"
+#include "../User/HAL/CAN/can_hal.hpp"
 
 namespace BSP::Motor
 {
@@ -24,22 +25,19 @@ template <uint8_t N> class MotorBase
         double add_angle;
     };
 
-    struct RunTime
-    {
-        RM_StaticTime dirTime; // 运行时间
-        bool Dir_Flag;
-    };
+    // 国际单位数据
+    UnitData unit_data_[N];
+    // 设备在线检测
+    //BSP::WATCH_STATE::StateWatch state_watch_[N];
 
-    UnitData unit_data_[N]; // 国际单位数据
-    RunTime runTime_[N];
-
-    virtual void Parse(const CAN_RxHeaderTypeDef RxHeader, const uint8_t *pData) = 0;
+    virtual void Parse(const HAL::CAN::Frame &frame) = 0;
 
   public:
     /**
      * @brief 获取角度
      *
-     * @param id can的id号，电机id - 初始id，例如3508的id为0x201，初始id为0x200，则id为0x201 - 0x200，也就是1,
+     * @param id can的id号，电机id - 初始id，例如3508的id为0x201，初始id为0x200，则id为0x201 -
+     * 0x200，也就是1,
      * @return float
      */
     float getAngleDeg(uint8_t id)
@@ -147,20 +145,21 @@ template <uint8_t N> class MotorBase
     }
 
     /**
-     * @brief 获取在线状态
+     * @brief 获取掉线的电机编号
      *
-     * @param id CAN od
-     * @return true 断联
-     * @return false 在线
+     * @return 掉线的电机编号（1-N），如果都在线则返回0
      */
-    bool GetDir(uint8_t id)
+    uint8_t getOfflineStatus()
     {
-        return this->runTime_[id - 1].Dir_Flag;
-    }
+        // for (uint8_t i = 0; i < N; i++)
+        // {
+        //     if (this->state_watch_[i].getStatus() != BSP::WATCH_STATE::Status::ONLINE)
+        //     {
+        //         return i + 1; // 返回掉线电机的编号（从1开始计数）
+        //     }
+        // }
 
-    uint32_t getRunTime(uint8_t id)
-    {
-        return this->runTime_[id - 1].dirTime.lastTime;
+        // return 0; // 所有电机都在线
     }
 };
 } // namespace BSP::Motor

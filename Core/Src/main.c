@@ -22,10 +22,9 @@
 #include "dma.h"
 #include "gpio.h"
 #include "usart.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "../User/Task/Call_Back.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -91,13 +90,11 @@ int main(void)
     MX_GPIO_Init();
     MX_DMA_Init();
     MX_CAN1_Init();
-    HAL_CAN_Start(&hcan1);
-    HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
     MX_USART1_UART_Init();
     MX_USART6_UART_Init();
+
     /* USER CODE BEGIN 2 */
     Init();
-
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -107,8 +104,9 @@ int main(void)
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
-        Vofa_Motor_Control();
-        HAL_Delay(1);
+        InWhile();
+
+        HAL_Delay(10);
     }
     /* USER CODE END 3 */
 }

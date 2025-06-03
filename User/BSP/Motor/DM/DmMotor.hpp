@@ -142,7 +142,7 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
 
         this->unit_data_[i].last_angle = Data;
 
-        this->runTime_[i].dirTime.UpLastTime();
+        this->state_watch_[i].updateTimestamp();
     }
 
   public:
@@ -153,15 +153,15 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
      * @param RxHeader  接收数据的句柄
      * @param pData     接收数据的缓冲区
      */
-    void Parse(const CAN_RxHeaderTypeDef RxHeader, const uint8_t *pData)
+    void Parse(const HAL::CAN::Frame &frame)
     {
-        const uint16_t received_id = CAN::BSP::CAN_ID(RxHeader);
+        const uint16_t received_id = frame.id;
 
         for (uint8_t i = 0; i < N; ++i)
         {
             if (received_id == init_address + recv_idxs_[i])
             {
-                memcpy(&feedback_[i], pData, sizeof(DMMotorfeedback));
+                memcpy(&feedback_[i], frame.data, sizeof(DMMotorfeedback));
 
                 feedback_->id = pData[0] & 0xF0;
                 feedback_->err = pData[0] & 0xF;
@@ -299,18 +299,6 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
         CAN::BSP::Can_Send(hcan, init_address + send_idxs_[motor_index - 1], send_data, CAN_TX_MAILBOX2);
     }
 
-    uint8_t ISDir()
-    {
-        bool is_dir = false;
-        for (uint8_t i = 0; i < N; i++)
-        {
-            is_dir |= this->runTime_[i].Dir_Flag = this->runTime_[i].dirTime.ISDir(10);
-            this->runTime_[i].Dir_Flag = is_dir;
-        }
-
-        return is_dir;
-    }
-
   protected:
     struct alignas(uint64_t) DMMotorfeedback
     {
@@ -347,13 +335,6 @@ template <uint8_t N> class DMMotorBase : public MotorBase<N>
 
 template <uint8_t N> class J4310 : public DMMotorBase<N>
 {
-  private:
-    // // 定义参数生成方法
-    // Parameters GetParameters() override
-    // {
-    //     return DMMotorBase<N>::CreateParams(-12.56, 12.56, -30, 30, -10, 10, 0.0, 500, 0.0, 5.0);
-    // }
-
   public:
     // 子类构造时传递参数
     /**

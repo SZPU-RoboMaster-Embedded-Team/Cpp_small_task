@@ -3,13 +3,11 @@
 #include "usart.h"
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif // __cplusplus
-    extern uint8_t rx_buf[8];
-    void Vofa_Motor_Control(void);
-
+    void Init();
+    void InWhile(void);
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-
