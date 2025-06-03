@@ -130,10 +130,12 @@ class Logger
 
         const char *colorCode = ColorCode::CYAN;
         const char *prefix = "[TRACE] ";
+        uint32_t timestamp = HAL_GetTick();
 
-        int prefixLen = SEGGER_RTT_printf(0, "%s%s", colorCode, prefix);
+        int prefixLen = SEGGER_RTT_printf(0, "%s[%u ms]%s", colorCode, timestamp, prefix);
+
         int contentLen = SEGGER_RTT_vprintf(0, fmt, &args);
-        int resetLen = SEGGER_RTT_printf(0, "\r\n%s", ColorCode::RESET);
+        int resetLen = SEGGER_RTT_printf(0, "%s", ColorCode::RESET);
 
         va_end(args);
         return prefixLen + contentLen + resetLen;
@@ -147,9 +149,11 @@ class Logger
         const char *colorCode = ColorCode::GREEN;
         const char *prefix = "[INFO] ";
 
-        int prefixLen = SEGGER_RTT_printf(0, "%s%s", colorCode, prefix);
+        uint32_t timestamp = HAL_GetTick();
+
+        int prefixLen = SEGGER_RTT_printf(0, "%s[%u ms]%s", colorCode, timestamp, prefix);
         int contentLen = SEGGER_RTT_vprintf(0, fmt, &args);
-        int resetLen = SEGGER_RTT_printf(0, "\r\n%s", ColorCode::RESET);
+        int resetLen = SEGGER_RTT_printf(0, "%s", ColorCode::RESET);
 
         va_end(args);
         return prefixLen + contentLen + resetLen;
@@ -162,10 +166,11 @@ class Logger
 
         const char *colorCode = ColorCode::YELLOW;
         const char *prefix = "[WARN] ";
+        uint32_t timestamp = HAL_GetTick();
 
-        int prefixLen = SEGGER_RTT_printf(0, "%s%s", colorCode, prefix);
+        int prefixLen = SEGGER_RTT_printf(0, "%s[%u ms]%s", colorCode, timestamp, prefix);
         int contentLen = SEGGER_RTT_vprintf(0, fmt, &args);
-        int resetLen = SEGGER_RTT_printf(0, "\r\n%s", ColorCode::RESET);
+        int resetLen = SEGGER_RTT_printf(0, "%s", ColorCode::RESET);
 
         va_end(args);
         return prefixLen + contentLen + resetLen;
@@ -179,9 +184,11 @@ class Logger
         const char *colorCode = ColorCode::RED;
         const char *prefix = "[ERROR] ";
 
-        int prefixLen = SEGGER_RTT_printf(0, "%s%s", colorCode, prefix);
+        uint32_t timestamp = HAL_GetTick();
+
+        int prefixLen = SEGGER_RTT_printf(0, "%s[%u ms]%s", colorCode, timestamp, prefix);
         int contentLen = SEGGER_RTT_vprintf(0, fmt, &args);
-        int resetLen = SEGGER_RTT_printf(0, "\r\n%s", ColorCode::RESET);
+        int resetLen = SEGGER_RTT_printf(0, "%s", ColorCode::RESET);
 
         va_end(args);
         return prefixLen + contentLen + resetLen;
@@ -195,9 +202,11 @@ class Logger
         const char *colorCode = ColorCode::MAGENTA;
         const char *prefix = "[FATAL] ";
 
-        int prefixLen = SEGGER_RTT_printf(0, "%s%s", colorCode, prefix);
+        uint32_t timestamp = HAL_GetTick();
+
+        int prefixLen = SEGGER_RTT_printf(0, "%s[%u ms]%s", colorCode, timestamp, prefix);
         int contentLen = SEGGER_RTT_vprintf(0, fmt, &args);
-        int resetLen = SEGGER_RTT_printf(0, "\r\n%s", ColorCode::RESET);
+        int resetLen = SEGGER_RTT_printf(0, "%s", ColorCode::RESET);
 
         va_end(args);
         return prefixLen + contentLen + resetLen;
