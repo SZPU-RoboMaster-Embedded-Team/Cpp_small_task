@@ -35,7 +35,7 @@ class StateWatch
      * @param name 设备名称
      * @param timeout_ms 超时时间(毫秒)
      */
-    StateWatch(const char *name, uint32_t timeout_ms);
+    StateWatch(uint32_t timeout_ms = 100);
 
     /**
      * @brief 默认析构函数
@@ -75,15 +75,6 @@ class StateWatch
     void setStatus(Status status);
 
     /**
-     * @brief 获取设备名称
-     * @return 设备名称
-     */
-    const char *getName() const
-    {
-        return name_;
-    }
-
-    /**
      * @brief 设置断联回调函数
      * @param callback 当设备状态变为离线时调用的回调函数
      * @param user_data 回调函数的用户数据指针
@@ -114,11 +105,9 @@ class StateWatch
      */
     static uint32_t getSystemTimeMs();
 
-    static constexpr uint8_t MAX_NAME_LENGTH = 32; /// 设备名称最大长度
-    char name_[MAX_NAME_LENGTH];                   /// 设备名称
-    uint32_t timeout_ms_;                          /// 超时时间(毫秒)
-    uint32_t last_update_time_;                    /// 上次数据更新时间
-    Status status_ = Status::OFFLINE;              /// 当前设备状态
+    uint32_t timeout_ms_;             /// 超时时间(毫秒)
+    uint32_t last_update_time_;       /// 上次数据更新时间
+    Status status_ = Status::OFFLINE; /// 当前设备状态
 
     OfflineCallbackFunc offline_callback_ = nullptr; // 断联回调函数
     void *offline_callback_data_ = nullptr;          // 断联回调函数用户数据

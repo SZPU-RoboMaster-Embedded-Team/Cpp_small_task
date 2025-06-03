@@ -13,6 +13,7 @@ struct Frame
     uint8_t data[8];
     ID_t id;
     uint8_t dlc;
+    uint32_t mailbox;
     // 是否是扩展ID
     bool is_extended_id;
     // 是否是远程帧

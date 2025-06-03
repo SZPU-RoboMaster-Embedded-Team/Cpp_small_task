@@ -40,6 +40,7 @@ bool CanDevice::send(const Frame &frame)
     tx_header.DLC = frame.dlc;
     tx_header.IDE = frame.is_extended_id ? CAN_ID_EXT : CAN_ID_STD;
     tx_header.RTR = frame.is_remote_frame ? CAN_RTR_REMOTE : CAN_RTR_DATA;
+    uint32_t temp_mailbox = frame.mailbox;
 
     if (frame.is_extended_id)
     {
@@ -54,7 +55,7 @@ bool CanDevice::send(const Frame &frame)
 
     tx_header.TransmitGlobalTime = DISABLE;
 
-    if (HAL_CAN_AddTxMessage(handle_, &tx_header, const_cast<uint8_t *>(frame.data), &mailbox_) != HAL_OK)
+    if (HAL_CAN_AddTxMessage(handle_, &tx_header, const_cast<uint8_t *>(frame.data), &temp_mailbox) != HAL_OK)
     {
         return false;
     }
