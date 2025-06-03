@@ -39,6 +39,7 @@ enum class LogLevel
     FATAL
 };
 
+
 class Logger
 {
   private:
