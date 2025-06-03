@@ -54,7 +54,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
     send(0X1FE, data);
 
     auto &log = HAL::LOGGER::Logger::getInstance();
-    log.printf("CAN1: %d\n", speed);
+    log.trace("CAN1: %d\n", rx_frame.data[0]);
 }
 
 void send(uint32_t id, uint8_t *data)

@@ -19,12 +19,29 @@ cd "$BUILD_DIR"
 cmake ..
 make -j 16
 
-# 根据项目名称生成 ELF，BIN 和 HEX 文件路径
-ELF_FILE="$BUILD_DIR/${PROJECT_NAME}.elf"
-BIN_FILE="$BUILD_DIR/${PROJECT_NAME}.bin"
-HEX_FILE="$BUILD_DIR/${PROJECT_NAME}.hex"
+# 查找ELF文件，找不到则尝试使用项目名，最后尝试查找任意.elf文件
+if [ -f "$BUILD_DIR/${TARGET_NAME}.elf" ]; then
+    ELF_FILE="$BUILD_DIR/${TARGET_NAME}.elf"
+elif [ -f "$BUILD_DIR/${PROJECT_NAME}.elf" ]; then
+    ELF_FILE="$BUILD_DIR/${PROJECT_NAME}.elf"
+    TARGET_NAME=$PROJECT_NAME
+else
+    # 查找任何.elf文件
+    ELF_FILE=$(find "$BUILD_DIR" -maxdepth 1 -name "*.elf" | head -n 1)
+    if [ -z "$ELF_FILE" ]; then
+        echo "Error: No ELF file found in build directory. Compilation might have failed."
+        exit 1
+    fi
+    TARGET_NAME=$(basename "$ELF_FILE" .elf)
+fi
 
-# 检查 ELF 文件是否 成功 生成
+BIN_FILE="$BUILD_DIR/${TARGET_NAME}.bin"
+HEX_FILE="$BUILD_DIR/${TARGET_NAME}.hex"
+
+echo "Using target: ${TARGET_NAME}"
+echo "ELF file: ${ELF_FILE}"
+
+# 检查 ELF 文件是否成功生成
 if [ -f "$ELF_FILE" ]; then
 # 将 ELF 文件转换为 BIN 文件和 HEX 文件
 arm-none-eabi-objcopy -O binary "$ELF_FILE" "$BIN_FILE"
@@ -39,5 +56,5 @@ fi
 cd "$PROJECT_DIR"
 
 # 方法1：直接在命令行中使用变量
-openocd -f interface/cmsis-dap.cfg -f target/stm32f4x.cfg -c "gdb_port 3334" -c "program build/${PROJECT_NAME}.elf verify reset exit"
+openocd -f interface/cmsis-dap.cfg -f target/stm32f4x.cfg -c "gdb_port 3334" -c "program build/${TARGET_NAME}.elf verify reset exit"
 
