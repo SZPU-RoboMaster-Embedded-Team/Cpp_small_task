@@ -68,6 +68,7 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
         }
         send_idxs_ = send_idxs;
     }
+    
 
   public:
     // 解析函数
@@ -77,6 +78,13 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
      * @param RxHeader  接收数据的句柄
      * @param pData     接收数据的缓冲区
      */
+    using UnitData = typename MotorBase<N>::UnitData; // 添加类型别名
+
+    // 获取反馈数据
+    const UnitData &GetUnitData(uint8_t idx = 0) const
+    {
+        return this->unit_data_[idx];
+    }
     void Parse(const HAL::CAN::Frame &frame)
     {
         const uint16_t received_id = frame.id;
@@ -90,7 +98,7 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
                 feedback_[i].angle = __builtin_bswap16(feedback_[i].angle);
                 feedback_[i].velocity = __builtin_bswap16(feedback_[i].velocity);
                 feedback_[i].current = __builtin_bswap16(feedback_[i].current);
-
+                
                 Configure(i);
 
              

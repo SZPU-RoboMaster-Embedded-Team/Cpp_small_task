@@ -31,10 +31,10 @@ void CanDevice::start()
 
 bool CanDevice::send(const Frame &frame)
 {
-    if (HAL_CAN_GetTxMailboxesFreeLevel(handle_) == 0)
-    {
-        return false;
-    }
+//    if (HAL_CAN_GetTxMailboxesFreeLevel(handle_) == 0)
+//    {
+//        return false;
+//    }
 
     CAN_TxHeaderTypeDef tx_header;
     tx_header.DLC = frame.dlc;
@@ -67,10 +67,10 @@ bool CanDevice::receive(Frame &frame)
 {
     CAN_RxHeaderTypeDef rx_header;
 
-    if (HAL_CAN_GetRxFifoFillLevel(handle_, fifo_) == 0)
-    {
-        return false;
-    }
+//    if (HAL_CAN_GetRxFifoFillLevel(handle_, fifo_) == 0)
+//    {
+//        return false;
+//    }
 
     if (HAL_CAN_GetRxMessage(handle_, fifo_, &rx_header, frame.data) != HAL_OK)
     {

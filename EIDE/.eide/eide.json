@@ -226,7 +226,8 @@
   "targets": {
     "H_Vofa": {
       "excludeList": [
-        "../User/BSP/Init.cpp"
+        "../User/BSP/Init.cpp",
+        "../User/APP/Vofa/Vofa_Send.cpp"
       ],
       "toolchain": "AC6",
       "compileConfig": {

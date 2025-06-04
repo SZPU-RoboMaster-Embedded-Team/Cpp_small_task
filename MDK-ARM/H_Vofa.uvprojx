@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F427xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;..\User</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../User</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -572,6 +572,11 @@
               <FileName>variables.hpp</FileName>
               <FileType>5</FileType>
               <FilePath>..\User\APP\variables.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>Vofa_Send.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\APP\Vofa\Vofa_Send.hpp</FilePath>
             </File>
           </Files>
         </Group>
