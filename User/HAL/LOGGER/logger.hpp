@@ -14,6 +14,9 @@
 #include "User/BSP/Common/SEGGER/Config/SEGGER_RTT_Conf.h"
 #include "User/BSP/Common/SEGGER/RTT/SEGGER_RTT.h"
 
+#include "main.h"
+#include <cstdint>
+
 namespace HAL::LOGGER
 {
 // ANSI颜色转义序列
@@ -38,7 +41,6 @@ enum class LogLevel
     ERROR,
     FATAL
 };
-
 
 class Logger
 {
@@ -213,8 +215,5 @@ class Logger
         return prefixLen + contentLen + resetLen;
     }
 };
-
-// 初始化静态成员变量
-Logger *Logger::instance = nullptr;
 
 } // namespace HAL::LOGGER

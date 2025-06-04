@@ -1,9 +1,11 @@
 #include "User/BSP/Common/SEGGER/RTT/SEGGER_RTT.h"
 #include "User/BSP/Common/StateWatch/state_watch.hpp"
 #include "User/BSP/Motor/Dji/DjiMotor.hpp"
+#include "User/HAL/ASSERT/assert.hpp"
 #include "User/HAL/CAN/can_hal.hpp"
 #include "User/HAL/LOGGER/logger.hpp"
 #include "User/HAL/UART/uart_hal.hpp"
+
 #include <cstring>
 
 uint8_t buffer[3] = {0};
@@ -39,9 +41,10 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
     {
         BSP::Motor::Dji::Motor6020.Parse(rx_frame);
 
-        // auto &log = HAL::LOGGER::Logger::getInstance();
+        auto &log = HAL::LOGGER::Logger::getInstance();
         pos = static_cast<uint32_t>(BSP::Motor::Dji::Motor6020.getAngleDeg(1));
-        // log.trace("Pos:%d\n", pos);
+        assert_always(pos > 10);
+        log.trace("Pos:%d\n", pos);
     }
 }
 
