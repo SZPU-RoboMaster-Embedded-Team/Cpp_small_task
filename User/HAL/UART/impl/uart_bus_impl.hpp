@@ -1,5 +1,16 @@
+/**
+ * @file uart_bus_impl.hpp
+ * @author 竹节虫 (k.yixiang@qq.com)
+ * @brief UART总线HAL层实现
+ * @version 0.0.1
+ * @date 2025-06-03
+ *
+ * @copyright SZPU-RCIA (c) 2025
+ *
+ */
+
 #pragma once
-#include "../..//HAL/UART/uart_hal.hpp"
+#include "../interface/uart_bus.hpp"
 #include "uart_device_impl.hpp"
 
 namespace HAL::UART
@@ -41,7 +52,6 @@ class UartBus : public IUartBus
 
     // 实际设备实例
     UartDevice uart1_;
-
     UartDevice uart6_;
 };
 

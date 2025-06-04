@@ -1,5 +1,16 @@
+/**
+ * @file logger.hpp
+ * @author 竹节虫 (k.yixiang@qq.com)
+ * @brief 日志打印
+ * @version 0.0.1
+ * @date 2025-06-03
+ *
+ * @copyright SZPU-RCIA (c) 2025
+ *
+ */
+
 #pragma once
-#include "../..//HAL/CAN/can_hal.hpp"
+#include "../interface/can_device.hpp"
 
 namespace HAL::CAN
 {

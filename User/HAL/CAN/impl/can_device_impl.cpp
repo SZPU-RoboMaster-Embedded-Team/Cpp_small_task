@@ -5,7 +5,7 @@ namespace HAL::CAN
 
 // CanDevice实现
 CanDevice::CanDevice(CAN_HandleTypeDef *handle, uint32_t filter_bank, uint32_t fifo)
-    : handle_(handle), filter_bank_(filter_bank), fifo_(fifo), mailbox_(1)
+    : handle_(handle), filter_bank_(filter_bank), fifo_(fifo), mailbox_(0)
 {
 }
 
@@ -40,6 +40,7 @@ bool CanDevice::send(const Frame &frame)
     tx_header.DLC = frame.dlc;
     tx_header.IDE = frame.is_extended_id ? CAN_ID_EXT : CAN_ID_STD;
     tx_header.RTR = frame.is_remote_frame ? CAN_RTR_REMOTE : CAN_RTR_DATA;
+    uint32_t temp_mailbox = frame.mailbox;
 
     if (frame.is_extended_id)
     {
@@ -54,10 +55,7 @@ bool CanDevice::send(const Frame &frame)
 
     tx_header.TransmitGlobalTime = DISABLE;
 
-	if (HAL_CAN_GetTxMailboxesFreeLevel(handle_) == 0)
-		return false;
-
-    if (HAL_CAN_AddTxMessage(handle_, &tx_header, const_cast<uint8_t *>(frame.data), 0) != HAL_OK)
+    if (HAL_CAN_AddTxMessage(handle_, &tx_header, const_cast<uint8_t *>(frame.data), &temp_mailbox) != HAL_OK)
     {
         return false;
     }
@@ -69,10 +67,10 @@ bool CanDevice::receive(Frame &frame)
 {
     CAN_RxHeaderTypeDef rx_header;
 
-    if (HAL_CAN_GetRxFifoFillLevel(handle_, fifo_) == 0)
-    {
-        return false;
-    }
+//    if (HAL_CAN_GetRxFifoFillLevel(handle_, fifo_) == 0)
+//    {
+//        return false;
+//    }
 
     if (HAL_CAN_GetRxMessage(handle_, fifo_, &rx_header, frame.data) != HAL_OK)
     {
@@ -107,7 +105,7 @@ void CanDevice::configure_filter()
     filter.FilterScale = CAN_FILTERSCALE_32BIT;
     filter.SlaveStartFilterBank = 14;
 
-    HAL_CAN_ConfigFilter(&hcan1, &filter);
+    HAL_CAN_ConfigFilter(handle_, &filter);
 }
 
 } // namespace HAL::CAN

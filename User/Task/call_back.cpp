@@ -1,56 +1,79 @@
+#include "../APP/Vofa/Vofa_Send.hpp"
 #include "../APP/variables.hpp"
-#include "../BSP/CAN_BSP/can_bus_impl.hpp"
 #include "../BSP/Motor/Dji/DjiMotor.hpp"
-#include "../BSP/UART_BSP/uart_bus_impl.hpp"
-#include "../BSP/Vofa/Vofa_send.hpp"
+#include "../User/BSP/Motor/Dji/DjiMotor.hpp"
+#include "../User/HAL/CAN/can_hal.hpp"
+#include "../User/HAL/UART/uart_hal.hpp"
+#include <cstring>
+uint8_t buffer[8] = {0};
+auto uatr_rx_frame = HAL::UART::Data{buffer, 7};
 
-// 全局缓冲区
-uint8_t rx_buf[8] = {0};
-
-// 获取UART6设备
-auto &uart6_dev = HAL::UART::UartBus::instance().get_device(HAL::UART::UartDeviceId::HAL_Uart6);
-
-// vofa控制器
-VofaMotorController vofaMotor(&uart6_dev, &BSP::Motor::Dji::Motor2006, pid_vel_204);
-
-// CAN接收回调
-CAN_RxHeaderTypeDef CAN1_RxHeader;
-uint8_t CAN1_RxHeaderData[8] = {0};
-
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
-{
-    // 只做数据转发，解析交给Motor
-    HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &CAN1_RxHeader, CAN1_RxHeaderData);
-//    if (hcan == &hcan1)
-//    {
-        BSP::Motor::Dji::Motor2006.Parse(CAN1_RxHeader, CAN1_RxHeaderData);
-    //}
-}
-
-// UART接收回调
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if (huart == &huart6)
-    {
-        if (rx_buf[0] == 0xA1)
-            vofaMotor.setTargetSpeed(*(float *)&rx_buf[1]);
-        else if (rx_buf[0] == 0xA2)
-            vofaMotor.setEnableFlag(rx_buf[1]);
-
-        // 重新启动接收（如有BSP层接收API可替换为BSP层）
-        HAL_UART_Receive_IT(&huart6, rx_buf, 5);
-    }
-}
-#ifdef __cplusplus
+auto &uart6 = HAL::UART::get_uart_bus_instance().get_device(HAL::UART::UartDeviceId::HAL_Uart6);
+VofaMotorController Vofa_Control(&uart6, &BSP::Motor::Dji::Motor2006, pid_vel_204);
 extern "C"
 {
-#endif
-    // 主控循环
-    void Vofa_Motor_Control()
+    void Init()
     {
-        vofaMotor.process();
-        auto feedback = BSP::Motor::Dji::Motor2006.GetUnitData(0);
+        HAL::CAN::get_can_bus_instance();
+
+        auto &uart6 = HAL::UART::get_uart_bus_instance().get_device(HAL::UART::UartDeviceId::HAL_Uart6);
+        uart6.receive_dma_idle(uatr_rx_frame);
+        uart6.transmit(uatr_rx_frame);
     }
-#ifdef __cplusplus
+
+    void InWhile()
+    {
+        Vofa_Control.process();
+    }
+} // extern "C"
+
+uint16_t speed = 0;
+uint8_t data[8] = {0};
+uint16_t target_speed = 0;
+HAL::CAN::Frame rx_frame;
+uint32_t pos = 0;
+
+void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+    auto &can1 = HAL::CAN::get_can_bus_instance().get_device(HAL::CAN::CanDeviceId::HAL_Can1);
+    can1.receive(rx_frame);
+    if (hcan == can1.get_handle())
+    {
+        BSP::Motor::Dji::Motor2006.Parse(rx_frame);
+        target_speed = (rx_frame.data[6] << 8) | rx_frame.data[7];
+        // 控制ID为4的2006电机，例如目标速度为1000
+        BSP::Motor::Dji::Motor2006.setCAN(target_speed, 4); // 4表示第4个电机
+        BSP::Motor::Dji::Motor2006.sendCAN();
+    }
 }
-#endif
+
+// UART中断
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+    auto &uart6 = HAL::UART::get_uart_bus_instance().get_device(HAL::UART::UartDeviceId::HAL_Uart6);
+
+    if (huart == uart6.get_handle())
+    {
+        if (buffer[0] == 0xA2)
+        {
+            if (buffer[1] == 0x00)
+            {
+                Vofa_Control.setEnableFlag(0x00); // 失能
+            }
+            else if (buffer[1] == 0x01)
+            {
+                Vofa_Control.setEnableFlag(0x01); // 使能
+            }
+        }
+        else if (buffer[0] == 0xA1)
+        {
+            uint16_t slider_value = (buffer[3] << 8) | buffer[4];
+            float target_speed;
+            // 计算 target_speed
+            target_speed = (0.09139f * slider_value + 1511.0f) / 2.0f;
+            Vofa_Control.setTargetSpeed(target_speed); // 设置目标速度
+        }
+        uart6.transmit(uatr_rx_frame);
+    }
+    uart6.receive_dma_idle(uatr_rx_frame);
+}

@@ -18,13 +18,11 @@ CanBus &CanBus::instance()
 
 CanBus::CanBus()
     // 初始化CAN1
-    : can1_(&hcan1, 0, CAN_FILTER_FIFO0)
-      // 初始化CAN2
+    : can1_(&hcan1, 0, CAN_FILTER_FIFO1)
 
 {
     // 注册现有的设备
     register_device(CanDeviceId::HAL_Can1, &can1_);
-
 
     // 这里可以轻松注册更多设备，比如CAN3
     // 例如: register_device(CanDeviceId::HAL_Can3, &can3_);

@@ -2,7 +2,6 @@
 // 基础DJI电机实现
 #include "../MotorBase.hpp"
 
-#include "../User/BSP/CAN_BSP/can_bus_impl.hpp" // 添加头文件
 #include "can.h"
 #include <cstdint>
 #include <cstring> // 添加头文件
@@ -69,15 +68,9 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
         }
         send_idxs_ = send_idxs;
     }
+    
 
   public:
-    using UnitData = typename MotorBase<N>::UnitData; // 添加类型别名
-
-    // 获取反馈数据
-    const UnitData &GetUnitData(uint8_t idx = 0) const
-    {
-        return this->unit_data_[idx];
-    }
     // 解析函数
     /**
      * @brief 解析CAN数据
@@ -85,23 +78,30 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
      * @param RxHeader  接收数据的句柄
      * @param pData     接收数据的缓冲区
      */
-    void Parse(const CAN_RxHeaderTypeDef RxHeader, const uint8_t *pData)
+    using UnitData = typename MotorBase<N>::UnitData; // 添加类型别名
+
+    // 获取反馈数据
+    const UnitData &GetUnitData(uint8_t idx = 0) const
     {
-        const uint16_t received_id = RxHeader.StdId;
+        return this->unit_data_[idx];
+    }
+    void Parse(const HAL::CAN::Frame &frame)
+    {
+        const uint16_t received_id = frame.id;
 
         for (uint8_t i = 0; i < N; ++i)
         {
             if (received_id == init_address + recv_idxs_[i])
             {
-                memcpy(&feedback_[i], pData, sizeof(DjiMotorfeedback));
+                memcpy(&feedback_[i], frame.data, sizeof(DjiMotorfeedback));
 
                 feedback_[i].angle = __builtin_bswap16(feedback_[i].angle);
                 feedback_[i].velocity = __builtin_bswap16(feedback_[i].velocity);
                 feedback_[i].current = __builtin_bswap16(feedback_[i].current);
-
+                
                 Configure(i);
 
-                this->runTime_[i].dirTime.UpLastTime();
+             
             }
         }
     }
@@ -114,27 +114,26 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
      */
     void setCAN(int16_t data, int id)
     {
-        frame.data[(id - 1) * 2] = data >> 8;
-        frame.data[(id - 1) * 2 + 1] = data << 8 >> 8;
+        tx_frame.id = send_idxs_;
+        tx_frame.dlc = 8;
+        tx_frame.is_extended_id = false;
+        tx_frame.is_remote_frame = false;
+        tx_frame.mailbox = 0;
+
+        tx_frame.data[(id - 1) * 2] = data >> 8;
+        tx_frame.data[(id - 1) * 2 + 1] = data << 8 >> 8;
     }
 
     /**
      * @brief               发送Can数据
      *
-     * @param han           Can句柄
      * @param pTxMailbox    邮箱
      */
     void sendCAN()
     {
-        // 获取 CAN1 设备
-        auto &can_dev = HAL::CAN::CanBus::instance().get_device(HAL::CAN::CanDeviceId::HAL_Can1);
+        auto &can = HAL::CAN::get_can_bus_instance().get_device(HAL::CAN::CanDeviceId::HAL_Can1);
 
-        frame.id = send_idxs_;         // 标准ID
-        frame.dlc = 8;                 // 数据长度
-        frame.is_extended_id = false;  // 标准帧
-        frame.is_remote_frame = false; // 数据帧
-
-        can_dev.send(frame);
+        can.send(tx_frame); // 发送数据
     }
 
   protected:
@@ -207,30 +206,11 @@ template <uint8_t N> class DjiMotorBase : public MotorBase<N>
     DjiMotorfeedback feedback_[N]; // 反馈数据
     uint8_t recv_idxs_[N];         // ID索引
     uint32_t send_idxs_;
-    HAL::CAN::Frame frame;
+    HAL::CAN::Frame tx_frame;
+    HAL::CAN::Frame rx_frame;
 
   public:
     Parameters params_; // 转国际单位参数列表
-
-    uint8_t ISDir()
-    {
-        bool is_dir = false;
-        for (uint8_t i = 0; i < N; i++)
-        {
-            is_dir |= this->runTime_[i].Dir_Flag = this->runTime_[i].dirTime.ISDir(1000);
-            this->runTime_[i].Dir_Flag = is_dir;
-        }
-
-        return is_dir;
-    }
-    uint32_t getSendIdx() const
-    {
-        return send_idxs_;
-    }
-    const uint8_t *getSendData() const
-    {
-        return frame.data;
-    }
 };
 
 /**
@@ -256,13 +236,6 @@ template <uint8_t N> class GM2006 : public DjiMotorBase<N>
  */
 template <uint8_t N> class GM3508 : public DjiMotorBase<N>
 {
-  private:
-    // 定义参数生成方法
-    // Parameters GetParameters() override
-    // {
-    //     return DjiMotorBase<N>::CreateParams(1, 0.3 * 1.0 / 19.0, 16384, 20, 8192);
-    // }
-
   public:
     // 子类构造时传递参数
     /**
@@ -286,13 +259,6 @@ template <uint8_t N> class GM3508 : public DjiMotorBase<N>
  */
 template <uint8_t N> class GM6020 : public DjiMotorBase<N>
 {
-  private:
-    // // 定义参数生成方法
-    // Parameters GetParameters() override
-    // {
-    //     return DjiMotorBase<N>::CreateParams(1.0, 0.7 * 1.0, 16384, 3, 8192);
-    // }
-
   public:
     // 子类构造时传递参数
     /**
@@ -317,6 +283,5 @@ template <uint8_t N> class GM6020 : public DjiMotorBase<N>
  */
 inline GM2006<1> Motor2006(0x200, {4}, 0x200);
 inline GM3508<2> Motor3508(0x200, {2, 3}, 0x200);
-inline GM6020<1> Motor6020(0x204, {1}, 0x1FE);
-
+inline GM6020<1> Motor6020(0x204, {2}, 0x1FE);
 } // namespace BSP::Motor::Dji
