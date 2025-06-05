@@ -1,0 +1,28 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.associations": {
+            "algorithm": "cpp",
+            "functional": "cpp",
+            "optional": "cpp",
+            "type_traits": "cpp",
+            "xtr1common": "cpp",
+            "xutility": "cpp",
+            "__bit_reference": "cpp",
+            "__functional_base": "cpp",
+            "__node_handle": "cpp",
+            "atomic": "cpp",
+            "__memory": "cpp",
+            "iterator": "cpp",
+            "limits": "cpp",
+            "memory": "cpp",
+            "tuple": "cpp",
+            "vector": "cpp"
+        }
+    },
+    "extensions": {}
+}
