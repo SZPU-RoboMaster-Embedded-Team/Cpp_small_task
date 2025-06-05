@@ -40,9 +40,9 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
     if (hcan == can1.get_handle())
     {
         BSP::Motor::Dji::Motor2006.Parse(rx_frame);
-        target_speed = (rx_frame.data[6] << 8) | rx_frame.data[7];
+        // target_speed = (rx_frame.data[6] << 8) | rx_frame.data[7];
         // 控制ID为4的2006电机，例如目标速度为1000
-        BSP::Motor::Dji::Motor2006.setCAN(target_speed, 4); // 4表示第4个电机
+        //BSP::Motor::Dji::Motor2006.setCAN(target_speed, 4); // 4表示第4个电机
         BSP::Motor::Dji::Motor2006.sendCAN();
     }
 }

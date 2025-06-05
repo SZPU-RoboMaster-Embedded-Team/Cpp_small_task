@@ -534,16 +534,6 @@
               <FilePath>..\User\BSP\Motor\MotorBase.hpp</FilePath>
             </File>
             <File>
-              <FileName>Init.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\Init.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Init.hpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\Init.hpp</FilePath>
-            </File>
-            <File>
               <FileName>StaticTime.hpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\User\BSP\StaticTime.hpp</FilePath>
@@ -552,51 +542,6 @@
               <FileName>stdxxx.hpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\User\BSP\stdxxx.hpp</FilePath>
-            </File>
-            <File>
-              <FileName>Vofa_send.hpp</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\User\BSP\Vofa\Vofa_send.hpp</FilePath>
-            </File>
-            <File>
-              <FileName>can_bus_impl.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\CAN_BSP\can_bus_impl.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>can_bus_impl.hpp</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\User\BSP\CAN_BSP\can_bus_impl.hpp</FilePath>
-            </File>
-            <File>
-              <FileName>can_device_impl.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\CAN_BSP\can_device_impl.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>can_device_impl.hpp</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\User\BSP\CAN_BSP\can_device_impl.hpp</FilePath>
-            </File>
-            <File>
-              <FileName>uart_bus_impl.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\UART_BSP\uart_bus_impl.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>uart_bus_impl.hpp</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\User\BSP\UART_BSP\uart_bus_impl.hpp</FilePath>
-            </File>
-            <File>
-              <FileName>uart_device_impl.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\BSP\UART_BSP\uart_device_impl.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>uart_device_impl.hpp</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\User\BSP\UART_BSP\uart_device_impl.hpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -642,6 +587,96 @@
               <FileName>call_back.hpp</FileName>
               <FileType>5</FileType>
               <FilePath>..\User\Task\call_back.hpp</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>HAL</GroupName>
+          <Files>
+            <File>
+              <FileName>can_bus_impl.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\HAL\CAN\impl\can_bus_impl.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>can_bus_impl.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\HAL\CAN\impl\can_bus_impl.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>can_device_impl.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\HAL\CAN\impl\can_device_impl.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>can_device_impl.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\HAL\CAN\impl\can_device_impl.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>can_bus.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\HAL\CAN\interface\can_bus.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>can_bus.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\HAL\CAN\interface\can_bus.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>can_device.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\HAL\CAN\interface\can_device.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>can_device.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\HAL\CAN\interface\can_device.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>can_hal.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\HAL\CAN\can_hal.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>uart_bus_impl.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\HAL\UART\impl\uart_bus_impl.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>uart_bus_impl.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\HAL\UART\impl\uart_bus_impl.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>uart_device_impl.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\HAL\UART\impl\uart_device_impl.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>uart_device_impl.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\HAL\UART\impl\uart_device_impl.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>uart_bus.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\HAL\UART\interface\uart_bus.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>uart_bus.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\HAL\UART\interface\uart_bus.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>uart_device.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\HAL\UART\interface\uart_device.hpp</FilePath>
+            </File>
+            <File>
+              <FileName>uart_hal.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\HAL\UART\uart_hal.hpp</FilePath>
             </File>
           </Files>
         </Group>

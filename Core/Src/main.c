@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "../User/Task/call_back.hpp"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,8 +107,8 @@ int main(void)
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
-        Vofa_Motor_Control();
-        HAL_Delay(1);
+        InWhile();
+        HAL_Delay(5);
     }
     /* USER CODE END 3 */
 }
