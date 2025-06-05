@@ -100,6 +100,7 @@
 #if defined(VECT_TAB_SRAM)
 #define VECT_TAB_BASE_ADDRESS   SRAM_BASE       /*!< Vector Table base address field.
                                                      This value must be a multiple of 0x200. */
+<<<<<<< Updated upstream
 #define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table base offset field.
                                                      This value must be a multiple of 0x200. */
 #else
@@ -108,6 +109,16 @@
 #define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table base offset field.
                                                      This value must be a multiple of 0x200. */
 #endif /* VECT_TAB_SRAM */
+=======
+#else
+#define VECT_TAB_BASE_ADDRESS   FLASH_BASE      /*!< Vector Table base address field.
+                                                     This value must be a multiple of 0x200. */
+#endif /* VECT_TAB_SRAM */
+#if !defined(VECT_TAB_OFFSET)
+#define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table offset field.
+                                                     This value must be a multiple of 0x200. */
+#endif /* VECT_TAB_OFFSET */
+>>>>>>> Stashed changes
 #endif /* USER_VECT_TAB_ADDRESS */
 /******************************************************************************/
 
@@ -219,7 +230,11 @@ void SystemInit(void)
   */
 void SystemCoreClockUpdate(void)
 {
+<<<<<<< Updated upstream
   uint32_t tmp = 0, pllvco = 0, pllp = 2, pllsource = 0, pllm = 2;
+=======
+  uint32_t tmp, pllvco, pllp, pllsource, pllm;
+>>>>>>> Stashed changes
   
   /* Get SYSCLK source -------------------------------------------------------*/
   tmp = RCC->CFGR & RCC_CFGR_SWS;

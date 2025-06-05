@@ -32,18 +32,24 @@ extern "C" {
 
 /* USER CODE END Includes */
 
+<<<<<<< Updated upstream
 extern UART_HandleTypeDef huart1;
 
 extern UART_HandleTypeDef huart3;
 
+=======
+>>>>>>> Stashed changes
 extern UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
+<<<<<<< Updated upstream
 void MX_USART1_UART_Init(void);
 void MX_USART3_UART_Init(void);
+=======
+>>>>>>> Stashed changes
 void MX_USART6_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */

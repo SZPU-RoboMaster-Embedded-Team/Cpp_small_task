@@ -34,14 +34,20 @@ extern "C" {
 
 extern CAN_HandleTypeDef hcan1;
 
+<<<<<<< Updated upstream
 extern CAN_HandleTypeDef hcan2;
 
+=======
+>>>>>>> Stashed changes
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
 void MX_CAN1_Init(void);
+<<<<<<< Updated upstream
 void MX_CAN2_Init(void);
+=======
+>>>>>>> Stashed changes
 
 /* USER CODE BEGIN Prototypes */
 
