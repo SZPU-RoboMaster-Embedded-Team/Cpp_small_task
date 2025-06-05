@@ -1,3 +1,13 @@
+/**
+ * @file Call_Back.cpp
+ * @brief CAN回调，UART回调和主函数
+ * @details 实现通过Vofa控制电机失能，使能和速度
+ * @param 将Vofa发送的数据解析后赋值给target_speed
+ * @author Pineapple-pai
+ * @date 2025/6/4
+ * @version 1.0.0
+ * 更详细的描述内容
+ */
 #include "../APP/Vofa/Vofa_Send.hpp"
 #include "../APP/variables.hpp"
 #include "../BSP/Motor/Dji/DjiMotor.hpp"
