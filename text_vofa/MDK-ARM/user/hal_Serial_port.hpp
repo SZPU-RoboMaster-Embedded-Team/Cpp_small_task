@@ -4,55 +4,55 @@
 /********************* INTERFACE_UART_DEVICE *********************/
 namespace HAL::UART
 {
-    // UARTÊı¾İ½á¹¹Ìå
+    // UARTæ•°æ®ç»“æ„ä½“
     struct Data
     {
-        uint8_t *buffer; // Êı¾İ»º³åÇøÖ¸Õë
-        uint16_t size;   // Êı¾İ´óĞ¡
+        uint8_t *buffer; // æ•°æ®ç¼“å†²åŒºæŒ‡é’ˆ
+        uint16_t size;   // æ•°æ®å¤§å°
     };
 
-    // UARTÉè±¸³éÏó½Ó¿Ú
+    // UARTè®¾å¤‡æŠ½è±¡æ¥å£
     class IUartDevice
     {
         public:
             virtual ~IUartDevice() = default;
 
-            // ³õÊ¼»¯UARTÉè±¸
+            // åˆå§‹åŒ–UARTè®¾å¤‡
             virtual void init() = 0;
 
-            //Æô¶¯UARTÉè±¸
+            //å¯åŠ¨UARTè®¾å¤‡
             virtual void start() = 0;
 
-            // ·¢ËÍÊı¾İ£¨·Ç×èÈû£©
+            // å‘é€æ•°æ®ï¼ˆéé˜»å¡ï¼‰
             virtual bool transmit(const Data &data) = 0;
 
-            //½ÓÊÕÊı¾İ£¨·Ç×èÈû£©
+            //æ¥æ”¶æ•°æ®ï¼ˆéé˜»å¡ï¼‰
             virtual bool receive(Data &data) = 0;
             
-            //»ñÈ¡UARTÉè±¸¾ä±ú
+            //è·å–UARTè®¾å¤‡å¥æŸ„
             virtual UART_HandleTypeDef *get_handle() const = 0;
 
-            //·¢ËÍµ¥¸ö×Ö½Ú
+            //å‘é€å•ä¸ªå­—èŠ‚
             virtual bool transmit_byte(uint8_t byte) = 0;
 
-            //½ÓÊÕµ¥¸ö×Ö½Ú
+            //æ¥æ”¶å•ä¸ªå­—èŠ‚
             virtual bool receive_byte(uint8_t &byte) = 0;
 
-            //Ê¹ÓÃDMA·¢ËÍÊı¾İ
+            //ä½¿ç”¨DMAå‘é€æ•°æ®
             virtual bool transmit_dma(const Data &data) = 0;
 
-            // Ê¹ÓÃDMA½ÓÊÕÊı¾İ
+            // ä½¿ç”¨DMAæ¥æ”¶æ•°æ®
             virtual bool receive_dma(Data &data) = 0;
 
-            //ÉèÖÃDMAÁ¬Ğø½ÓÊÕ²¢Ê¹ÓÃ¿ÕÏĞÖĞ¶Ï¼ì²â
+            //è®¾ç½®DMAè¿ç»­æ¥æ”¶å¹¶ä½¿ç”¨ç©ºé—²ä¸­æ–­æ£€æµ‹
             virtual bool receive_dma_idle(Data &data) = 0;
 
-            //Çå³şORE´íÎó£¨´®¿ÚÒç³ö£©²¢ÖØĞÂÆô¶¯DMA½ÓÊÕ
+            //æ¸…æ¥šOREé”™è¯¯ï¼ˆä¸²å£æº¢å‡ºï¼‰å¹¶é‡æ–°å¯åŠ¨DMAæ¥æ”¶
             virtual void clear_ore_error(Data &data) = 0;
     };
 
 /********************* INTERFACE_UART_BUS *********************/
-// UARTÉè±¸IDÃ¶¾Ù
+// UARTè®¾å¤‡IDæšä¸¾
 enum class UartDeviceId : uint8_t
 {
     HAL_UART1 = 0,
@@ -66,16 +66,16 @@ enum class UartDeviceId : uint8_t
     MAX_DEVICES
 };
 
-//uart×ÜÏß³éÏó½Ó¿Ú
+//uartæ€»çº¿æŠ½è±¡æ¥å£
 class IUartBus
 {
     public:
         virtual ~IUartBus() = default;
 
-        // »ñÈ¡Ö¸¶¨UARTÉè±¸
+        // è·å–æŒ‡å®šUARTè®¾å¤‡
         virtual IUartDevice *get_device(UartDeviceId id) = 0;
 
-        //¼æÈİ¾ÉAPI£¨Ó¦ÓÃ³ÌĞò±à³Ì½Ó¿Ú£©µÄ±ã½İ·½·¨
+        //å…¼å®¹æ—§APIï¼ˆåº”ç”¨ç¨‹åºç¼–ç¨‹æ¥å£ï¼‰çš„ä¾¿æ·æ–¹æ³•
         // IUartDevice &get_uart1()
         // {
         //     return get_device(UartDeviceId::HAL_UART1);
@@ -109,30 +109,30 @@ class IUartBus
         //     return get_device(UartDeviceId::HAL_UART8);
         // }        
 
-        // ¼ì²éÖ¸¶¨UARTÉè±¸ÊÇ·ñ´æÔÚ
+        // æ£€æŸ¥æŒ‡å®šUARTè®¾å¤‡æ˜¯å¦å­˜åœ¨
         virtual bool has_device(UartDeviceId id) const = 0;
 };
 
-//»ñÈ¡UART×ÜÏßµ¥ÀıÊµÀı
+//è·å–UARTæ€»çº¿å•ä¾‹å®ä¾‹
 IUartBus &get_uart_bus_instance();
 
 /********************* IMPL_UART_DEVICE *********************/
 
-//UARTÓ²¼şÉè±¸ÊµÏÖÀà
+//UARTç¡¬ä»¶è®¾å¤‡å®ç°ç±»
 class UartDevice : public IUartDevice
 {
     public:
-        //¹¹Ôìº¯Êı£¬³õÊ¼»¯UARTÉè±¸
+        //æ„é€ å‡½æ•°ï¼Œåˆå§‹åŒ–UARTè®¾å¤‡
         explicit UartDevice(const UartDevice &) = delete;
 
-        //Îö¹¹º¯Êı
+        //ææ„å‡½æ•°
         ~UartDevice() override = default;
 
-        //½ûÖ¹¿½±´½á¹¹ºÍ¸³Öµ²Ù×÷
+        //ç¦æ­¢æ‹·è´ç»“æ„å’Œèµ‹å€¼æ“ä½œ
         UartDevice(const UartDevice &) = delete;
         UartDevice &operator=(const UartDevice &) = delete;
 
-        //ÊµÏÖIUartDevice½Ó¿Ú
+        //å®ç°IUartDeviceæ¥å£
         void init() override;
         void start() override;
         bool transmit(const Data &data) override;
@@ -141,6 +141,58 @@ class UartDevice : public IUartDevice
         bool receive_byte(uint8_t &byte) override;
         bool transmit_dma(const Data &data) override;
         bool receive_dma(Data &data) override;
+
+
+        UART_HandleTypeDef *get_handle() const override;
+
+    private:
+        UART_HandleTypeDef *handle_;
+        //æ¥æ”¶çŠ¶æ€æ ‡å¿—
+        bool is_receiving_;
+        //DMAä¼ è¾“çŠ¶æ€
+        bool is_dma_tx_ongoing_;        
+        bool is_dma_rx_ongoing_;
+        //ç©ºé—²ä¸­æ–­çŠ¶æ€
+        bool is_idle_enabled_;
+};
+
+//UARTæ€»çº¿ç®¡ç†å®ç°ç±»
+class UartBus : public IUartBus
+{
+    public:
+        //è·å–å•ä¾‹å®ä¾‹
+        static UartBus &instance();
+
+        //ææ„å‡½æ•°
+        ~UartBus() override = default;
+
+        //å®ç°IUartBusæ¥å£
+        IUartDevice &get_device(UartDeviceId id) override;
+        bool has_device(UartDeviceId id) const override;
+
+        //åˆå§‹åŒ–UARTæ€»çº¿
+        void init();
+
+    private:
+        //ç§æœ‰æ„é€ å‡½æ•°ï¼ˆå•ä¾‹æ¨¡å¼ï¼‰
+        UartBus();
+
+        //æ³¨å†Œä¸€ä¸ªUARTè®¾å¤‡
+        void register_device(UartDeviceId id, UartDevice *device);
+
+        //æ˜¯å¦å·²åˆå§‹åŒ–æ ‡å¿—
+        bool initalized_ = false;
+
+        //ç¦æ­¢æ‹·è´æ„é€ å’Œèµ‹å€¼æ“ä½œ
+        UartBus(const UartBus &) = delete;
+        UartBus &operator = (const UartBus &) = delete;
+
+        //ä½¿ç”¨æŒ‡é’ˆæ•°ç»„ä»£æ›¿å›ºå®šæˆå‘˜å˜é‡
+        UartDevice *devices_[(size_t)UartDeviceId::MAX_DEVICES] = {nullptr};
+
+        //å®é™…è®¾å¤‡å®ä¾‹
+        UartDevice uart6_;
+
 };
 }
 
