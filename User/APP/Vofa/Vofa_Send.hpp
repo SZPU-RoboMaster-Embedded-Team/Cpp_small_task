@@ -21,26 +21,39 @@ class VofaMotorController
         uint32_t now_tick = HAL_GetTick();
         float dt = (now_tick - last_tick) / 1000.0f;
         last_tick = now_tick;
-
         const auto &feedback = motor->GetUnitData(0);
-        if (enable_flag == 0x01)
-            time_axis += dt;
-        else
-            time_axis = 0.0f;
-        float freq = (feedback.velocity_Rpm / 9.0f);
-        send(feedback.angle_Deg, feedback.velocity_Rpm, time_axis, freq, 0, 0);
-
+        float freq = feedback.velocity_Rpm * 0.15f;
         // CAN控制
         float pid_output = 0;
         if (enable_flag == 0x01)
-            pid_output = pid_ctrl.compute(target_speed, feedback.velocity_Rpm); // 直接使用 target_speed
-        else
-            pid_output = 0;
-        motor->setCAN((int16_t)pid_output, 4);
+        {
+            pid_output = pid_ctrl.compute(target_speed, feedback.velocity_Rpm);
 
+            if (feedback.velocity_Rpm < -10)
+            {
+                time_axis += dt;
+
+                // 判断是否超过设定的定时关闭时间
+                if (time_axis >= time_stop)
+                {
+                    enable_flag = 0x00;
+                    pid_output = 0;
+                    pid_ctrl.reset();
+                    motor->setCAN(0, 4);
+                    motor->sendCAN();
+                    
+                }
+            }
+        }
+        else
+        {
+            pid_output = 0;
+        }
+
+        send(feedback.angle_Deg, feedback.velocity_Rpm, time_axis, freq, 0, 0);
+        motor->setCAN((int16_t)pid_output, 4);
         motor->sendCAN();
     }
-
     float getTargetSpeed() const
     {
         return target_speed;
@@ -56,6 +69,10 @@ class VofaMotorController
     void setEnableFlag(uint8_t flag)
     {
         enable_flag = flag;
+    }
+    void setRunDuration(float seconds)
+    {
+        time_stop = seconds;
     }
 
   private:
@@ -81,4 +98,6 @@ class VofaMotorController
     uint8_t enable_flag;
     float time_axis;
     uint32_t last_tick;
+    float time_stop = 5.0f;
+    int time_start = 0;
 };

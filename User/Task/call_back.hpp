@@ -2,12 +2,12 @@
 #include "can.h"
 #include "usart.h"
 
-#ifdef __cplusplus
+#ifdef Call_Back
 extern "C"
 {
-#endif // __cplusplus
+#endif // Call_Back
     void Init();
     void InWhile(void);
-#ifdef __cplusplus
+#ifdef Call_Back
 }
-#endif // __cplusplus
+#endif // Call_Back

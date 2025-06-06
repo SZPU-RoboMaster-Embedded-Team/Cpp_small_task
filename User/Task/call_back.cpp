@@ -17,7 +17,7 @@
 #include <cstring>
 uint8_t buffer[8] = {0};
 auto uatr_rx_frame = HAL::UART::Data{buffer, 7};
-
+int shoot_time = 0;
 auto &uart6 = HAL::UART::get_uart_bus_instance().get_device(HAL::UART::UartDeviceId::HAL_Uart6);
 VofaMotorController Vofa_Control(&uart6, &BSP::Motor::Dji::Motor2006, pid_vel_204);
 extern "C"
@@ -50,9 +50,6 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
     if (hcan == can1.get_handle())
     {
         BSP::Motor::Dji::Motor2006.Parse(rx_frame);
-        target_speed = (rx_frame.data[6] << 8) | rx_frame.data[7];
-        // 控制ID为4的2006电机，例如目标速度为1000
-        BSP::Motor::Dji::Motor2006.setCAN(target_speed, 4); // 4表示第4个电机
         BSP::Motor::Dji::Motor2006.sendCAN();
     }
 }
@@ -73,15 +70,15 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
             else if (buffer[1] == 0x01)
             {
                 Vofa_Control.setEnableFlag(0x01); // 使能
+                Vofa_Control.setRunDuration(5.0f);
             }
         }
         else if (buffer[0] == 0xA1)
         {
             uint16_t slider_value = (buffer[3] << 8) | buffer[4];
-            float target_speed;
             // 计算 target_speed
-            target_speed = (0.09139f * slider_value + 1511.0f) / 2.0f;
-            Vofa_Control.setTargetSpeed(target_speed); // 设置目标速度
+            float target_speed = 0.00405f * (slider_value - 10987.67f);
+            Vofa_Control.setTargetSpeed(-target_speed); // 设置目标速度
         }
         uart6.transmit(uatr_rx_frame);
     }
