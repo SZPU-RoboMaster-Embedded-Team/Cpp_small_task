@@ -141,6 +141,56 @@ class UartDevice : public IUartDevice
         bool receive_byte(uint8_t &byte) override;
         bool transmit_dma(const Data &data) override;
         bool receive_dma(Data &data) override;
+
+        UART_HandleTypeDef *get_handle() const override;
+
+    private:
+        UART_HandleTypeDef *handle_;
+        //接收状态标志
+        bool is_receiving_;
+        //DMA传输状态
+        bool is_dma_tx_ongoing_;        
+        bool is_dma_rx_ongoing_;
+        //空闲中断状态
+        bool is_idle_enabled_;
+};
+
+//UART总线管理实现类
+class UartBus : public IUartBus
+{
+    public:
+        //获取单例实例
+        static UartBus &instance();
+
+        //析构函数
+        ~UartBus() override = default;
+
+        //实现IUartBus接口
+        IUartDevice &get_device(UartDeviceId id) override;
+        bool has_device(UartDeviceId id) const override;
+
+        //初始化UART总线
+        void init();
+
+    private:
+        //私有构造函数（单例模式）
+        UartBus();
+
+        //注册一个UART设备
+        void register_device(UartDeviceId id, UartDevice *device);
+
+        //是否已初始化标志
+        bool initalized_ = false;
+
+        //禁止拷贝构造和赋值操作
+        UartBus(const UartBus &) = delete;
+        UartBus &operator = (const UartBus &) = delete;
+
+        //使用指针数组代替固定成员变量
+        UartDevice *devices_[(size_t)UartDeviceId::MAX_DEVICES] = {nullptr};
+
+        //实际设备实例
+        UartDevice uart6_;
 };
 }
 
