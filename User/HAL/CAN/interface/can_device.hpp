@@ -1,5 +1,7 @@
 #pragma once
 #include "can.h"
+#include <cstdint>
+#include <stm32f4xx_hal_can.h>
 
 namespace HAL::CAN
 {
