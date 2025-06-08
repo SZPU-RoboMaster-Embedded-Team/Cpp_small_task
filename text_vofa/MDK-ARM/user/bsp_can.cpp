@@ -34,7 +34,18 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     can1.receive(rx_frame);
     if(hcan == can1.get_handle())
     {
-        BSP::Motor::Motor3508.Parse(rx_frame);
-        pos = static_cast<uint32_t>(BSP::Motor::Motor3508.GetPos());
+        BSP::Motor::Motor2006.Parse(rx_frame);
+        pos = static_cast<uint32_t>(BSP::Motor::Motor2006.GetPos());
+    }
+}
+
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
+{
+    auto &uart6 = HAL::UART::get_uart_bus_instance().get_device(HAL::UART::UartDeviceId::HAL_UART6);
+    if(huart == uart6.get_handle())
+    {
+        uart6->transmit_dma(uart_rx_frame);
+
+        auto &log = HAL::
     }
 }

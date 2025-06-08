@@ -710,6 +710,16 @@
               <FileType>9</FileType>
               <FilePath>.\user\Serial_port.hpp</FilePath>
             </File>
+            <File>
+              <FileName>VOFA.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\user\VOFA.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>VOFA.hpp</FileName>
+              <FileType>9</FileType>
+              <FilePath>.\user\VOFA.hpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
