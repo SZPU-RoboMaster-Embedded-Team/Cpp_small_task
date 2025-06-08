@@ -1,35 +1,36 @@
 #include <hal_Serial_port.hpp>
 
+
 /********************* INTERFACE_UART_BUS *********************/
 namespace HAL::UART
 {
-    //全局函数实现
+    //脠芦戮脰潞炉脢媒脢碌脧脰
     IUartBus &get_uart_bus_instance()
     {
         return UartBus::instance();
     }
 
 /********************* IMPL_UART_DEVICE *********************/
-//UartDevice实现
-//构造函数 
+//UartDevice脢碌脧脰
+//鹿鹿脭矛潞炉脢媒 
 UartDevice::UartDevice(UART_HandleTypeDef *handle) :  handle_(handle), is_receiving_(false), is_dma_tx_ongoing_(false), is_dma_rx_ongoing_(false), is_idle_enabled_(false)
 {
 }
 
 void UartDevice::init()
 {
-    //UART在HAL_UART_Init中初始化，无需再次初始化
+    //UART脭脷HAL_UART_Init脰脨鲁玫脢录禄炉拢卢脦脼脨猫脭脵麓脦鲁玫脢录禄炉
 }
 
 void UartDevice::start()
 {
-    //启动UART中断
+    //脝么露炉UART脰脨露脧
     __HAL_UART_ENABLE_IT(handle_, UART_IT_RXNE);
 }
 
 bool UartDevice::transmit(const Data &data)
 {
-    if(data.buffer == nullptr || data.size == 0)    //nullptr是空指针
+    if(data.buffer == nullptr || data.size == 0)    //nullptr脢脟驴脮脰赂脮毛
     {
         return false;
     }
@@ -113,7 +114,7 @@ bool UartDevice::receive_dma_idle(Data &data)
 
 void UartDevice::clear_ore_error(Data &data)
 {
-    if(__HAL_UART_GET_FLAG(handle_, UART_FLAG_ORE)) //检测ORE（串口溢出）错误
+    if(__HAL_UART_GET_FLAG(handle_, UART_FLAG_ORE)) //录矛虏芒ORE拢篓麓庐驴脷脪莽鲁枚拢漏麓铆脦贸
     {
         __HAL_UART_CLEAR_OREFLAG(handle_);
         HAL_UARTEx_ReceiveToIdle_DMA(handle_, data.buffer, data.size);
@@ -128,8 +129,8 @@ UART_HandleTypeDef *UartDevice::get_handle() const
 /********************* IMPL_UART_BUS *********************/
 UartBus &UartBus::instance()
 {
-    static UartBus instance; //实例化UartBus类的静态成员变量
-    //在第一次获取实例时初始化
+    static UartBus instance; //脢碌脌媒禄炉UartBus脌脿碌脛戮虏脤卢鲁脡脭卤卤盲脕驴
+    //脭脷碌脷脪禄麓脦禄帽脠隆脢碌脌媒脢卤鲁玫脢录禄炉
     if(!instance.initialized_)
     {
         instance.init();
@@ -140,13 +141,13 @@ UartBus &UartBus::instance()
 
 UartBus::UartBus() : uart6_(&huart6)
 {
-    //注册现有的设备
+    //脳垄虏谩脧脰脫脨碌脛脡猫卤赂
     register_device(UartDeviceId::HAL_UART6, &uart6_);
 }
 
 void UartBus::init()
 {
-    //初始化所有已注册的设备
+    //鲁玫脢录禄炉脣霉脫脨脪脩脳垄虏谩碌脛脡猫卤赂
     for(size_t i = 0; i < (size_t)UartDeviceId::MAX_DEVICES; ++i)
     {
         if(devices_[i] != nullptr)
@@ -171,7 +172,7 @@ IUartDevice &UartBus::get_device(UartDeviceId id)
     {
         return *devices_[(size_t)id];
     }
-    return uart6_; //如果没有可用设备，返回uart1_（保证永远有返回值）
+    return uart6_; //脠莽鹿没脙禄脫脨驴脡脫脙脡猫卤赂拢卢路碌禄脴uart1_拢篓卤拢脰陇脫脌脭露脫脨路碌禄脴脰碌拢漏
 }
 
 bool UartBus::has_device(UartDeviceId id) const
@@ -180,5 +181,4 @@ bool UartBus::has_device(UartDeviceId id) const
 }
 
 }
-
 
