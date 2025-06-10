@@ -1,4 +1,8 @@
+#ifndef  _VOFA_HPP_
+#define  _VOFA_HPP_
+
 #include <hal_Serial.h>
+
 namespace UART::VOFA
 {
     struct VOFAData 
@@ -31,7 +35,7 @@ namespace UART::VOFA
         // 全局定义发送缓冲区（假设为全局变量）
         uint8_t send_str2[sizeof(float) * 8]; // 分配8个float空间（32字节）
 
-        void vofa_send(float x1, float x2, float x3, float x4, float x5, float x6) {
+        static void vofa_send(float x1, float x2, float x3, float x4, float x5, float x6) {
             const uint8_t sendSize = sizeof(float); // 单浮点数占4字节
 
             // 将6个浮点数据写入缓冲区（小端模式）
@@ -53,3 +57,5 @@ namespace UART::VOFA
         static inline uint8_t data[4];
     };
 }
+
+#endif
