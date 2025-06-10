@@ -1,6 +1,7 @@
 #ifndef _DJI_MOTOR_HPP_
 #define _DJI_MOTOR_HPP_ 
 
+
 #include <hal_can.hpp>
 namespace BSP::Motor
 {
@@ -9,71 +10,71 @@ template <uint8_t N> class MotorBase
     protected:
         struct UnitData
         {
-            double angle_Deg; // µ¥Î»¶È½Ç¶È
-            double angle_Rad; // µ¥Î»»¡¶È½Ç¶È
+            double angle_Deg; // å•ä½åº¦è§’åº¦
+            double angle_Rad; // å•ä½å¼§åº¦è§’åº¦
 
-            double velocity_Rad; // µ¥Î»»¡¶ÈËÙ¶È
-            double velocity_Rpm; // µ¥Î»rpm
+            double velocity_Rad; // å•ä½å¼§åº¦é€Ÿåº¦
+            double velocity_Rpm; // å•ä½rpm
 
-            double current_A;     // µ¥Î»°²Åà
-            double torque_Nm;     // µ¥Î»Å£Ã×
-            double temperature_C; // µ¥Î»ÉãÊÏ¶È
+            double current_A;     // å•ä½å®‰åŸ¹
+            double torque_Nm;     // å•ä½ç‰›ç±³
+            double temperature_C; // å•ä½æ‘„æ°åº¦
 
             double last_angle;
             double add_angle;
         };
 
-        //¹ú¼Êµ¥Î»Êı¾İ
+        //å›½é™…å•ä½æ•°æ®
         UnitData unit_data_[N];
-        //Éè±¸ÔÚÏß¼à²â
+        //è®¾å¤‡åœ¨çº¿ç›‘æµ‹
         BSP::WATCH_STATE::StateWatch state_watch_[N];
 
         virtual void Pare(const HAL::CAN::Frame &frame) = 0;
 
     public:
-        //»ñÈ¡½Ç¶È
+        //è·å–è§’åº¦
         float getAngleDeg(uint8_t id)
         {
             return this->unit_data_[id - 1].angle_Deg;
         }
 
-        //»ñÈ¡»¡¶È
+        //è·å–å¼§åº¦
         float getAngleRad(uint8_t id)
         {
             return this->unit_data_[id - 1].angle_Rad;
         }
 
-        //»ñÈ¡ÉÏÒ»´Î½Ç¶È
+        //è·å–ä¸Šä¸€æ¬¡è§’åº¦
         float getLastAngleDeg(uint8_t id)
         {
             return this->unit_data_[id - 1].last_angle;
         }
         
-        //»ñÈ¡ÔöÁ¿½Ç¶È
+        //è·å–å¢é‡è§’åº¦
         float getAddAngleDeg(uint8_t id)
         {
             return this->unit_data_[id - 1].add_angle;
         }
         
-        //»ñÈ¡ÔöÁ¿»¡¶È
+        //è·å–å¢é‡å¼§åº¦
         float getAddAngleRad(uint8_t id)
         {
             return this->unit_data_[id - 1].add_angle;
         }
 
-        //»ñÈ¡ËÙ¶È    µ¥Î»£º(rad/s) ×ªÖá
+        //è·å–é€Ÿåº¦    å•ä½ï¼š(rad/s) è½¬è½´
         float getVelocityRads(uint8_t id)
         {
             return this->unit_data_[id - 1].velocity_Rad;
         }
 
-        //»ñÈ¡ËÙ¶È    µ¥Î»£º(rpm) ×ª×Ó 
+        //è·å–é€Ÿåº¦    å•ä½ï¼š(rpm) è½¬å­ 
         float getVelocityRpm(uint8_t id)
         {
             return this->unit_data_[id - 1].velocity_Rpm;
         }
         
-        //»ñÈ¡µçÁ÷Öµ    µ¥Î»£º(A)
+        //è·å–ç”µæµå€¼    å•ä½ï¼š(A)
         float getCelocityRpm(uint8_t id)
         {
             return this->unit_data_[id - 1].velocity_Rpm;
@@ -84,13 +85,13 @@ template <uint8_t N> class MotorBase
             return this->unit_data_[id - 1].current_A;
         }
 
-        //»ñÈ¡Á¦¾Ø    µ¥Î»£º(Nm)
+        //è·å–åŠ›çŸ©    å•ä½ï¼š(Nm)
         float getTorque(uint8_t id)
         {
             return this->unit_data_[id - 1].torque_Nm;
         }
 
-        //»ñÈ¡ÎÂ¶È    µ¥Î»£º(¡ã)
+        //è·å–æ¸©åº¦    å•ä½ï¼š(Â°)
         float getTemperature(uint8_t id)
         {
             return this->unit_data_[id - 1].temperature_C;
@@ -102,12 +103,13 @@ template <uint8_t N> class MotorBase
             {
                 if (this->state_watch_[i].getStatus() != BSP::WATCH_STATE::Status::ONLINE)
                 {
-                    return i + 1; // ·µ»ØµôÏßµç»úµÄ±àºÅ£¨´Ó1¿ªÊ¼¼ÆÊı£©
+                    return i + 1; // è¿”å›æ‰çº¿ç”µæœºçš„ç¼–å·ï¼ˆä»1å¼€å§‹è®¡æ•°ï¼‰
                 }
             }
 
-            return 0; // ËùÓĞµç»ú¶¼ÔÚÏß
+            return 0; // æ‰€æœ‰ç”µæœºéƒ½åœ¨çº¿
         }
 };
 }
+
 #endif

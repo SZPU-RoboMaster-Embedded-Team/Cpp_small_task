@@ -4,7 +4,7 @@
 #include <cstring>
 
 uint8_t buffer[3] = {0};
-auto uart_rx_frame = HAL::UART::Data{buffer, 3};    //½á¹¹ÌåData³õÊ¼»¯£¬ÓĞÊı×éºÍ´óĞ¡
+auto uart_rx_frame = HAL::UART::Data{buffer, 3};    //ç»“æ„ä½“Dataåˆå§‹åŒ–ï¼Œæœ‰æ•°ç»„å’Œå¤§å°
 
 extern "c"
 {
@@ -27,8 +27,10 @@ uint8_t data[8] = {0};
 
 HAL::CAN:: Can_data rx_frame;
 uint32_t pos = 0;
+
 uint32_t speed = 0;
 float target_speed;
+
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
@@ -47,10 +49,11 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
     uart6->receive_dma(uart_rx_frame);
     if(huart == uart6.get_handle())
     {
-        // ½âÎö½ÓÊÕµ½µÄÊı¾İ£¨ÀıÈç½âÎö VOFA Êı¾İ£©
+        // è§£ææ¥æ”¶åˆ°çš„æ•°æ®ï¼ˆä¾‹å¦‚è§£æ VOFA æ•°æ®ï¼‰
         UART::VOFA::VOFAManager::uartRxEventCallback(huart, Size);
 
-        // ¸ù¾İĞèÒª½øĞĞ½øÒ»²½´¦Àí£¨ÀıÈç¸üĞÂÄ¿±êËÙ¶ÈµÈ£©
+        // æ ¹æ®éœ€è¦è¿›è¡Œè¿›ä¸€æ­¥å¤„ç†ï¼ˆä¾‹å¦‚æ›´æ–°ç›®æ ‡é€Ÿåº¦ç­‰ï¼‰
         target_speed = UART::VOFA::VOFAManager::vofa.speed;
     }
 }
+

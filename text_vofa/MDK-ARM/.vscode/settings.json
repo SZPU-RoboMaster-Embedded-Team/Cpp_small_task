@@ -5,9 +5,11 @@
         "utility": "cpp",
         "xstring": "cpp",
         "xutility": "cpp",
+
         "string": "cpp",
         "cstring": "cpp",
         "memory": "cpp",
         "type_traits": "cpp"
+
     }
 }

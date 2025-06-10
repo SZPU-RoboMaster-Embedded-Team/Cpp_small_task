@@ -7,55 +7,59 @@
 /********************* INTERFACE_UART_DEVICE *********************/
 namespace HAL::UART
 {
-    // UART鏁版嵁缁撴瀯浣�
+
+    // UART数据结构体
     struct Data
     {
-        uint8_t *buffer; // 鏁版嵁缂撳啿鍖烘寚閽�
-        uint16_t size;   // 鏁版嵁澶у皬
+        uint8_t *buffer; // 数据缓冲区指针
+        uint16_t size;   // 数据大小
     };
 
-    // UART璁惧鎶借薄鎺ュ彛
+    // UART设备抽象接口
+
     class IUartDevice
     {
         public:
             virtual ~IUartDevice() = default;
 
-            // 鍒濆鍖朥ART璁惧
+            // 初始化UART设备
             virtual void init() = 0;
 
-            //鍚姩UART璁惧
+            //启动UART设备
             virtual void start() = 0;
 
-            // 鍙戦€佹暟鎹紙闈為樆濉烇級
+            // 发送数据（非阻塞）
             virtual bool transmit(const Data &data) = 0;
 
-            //鎺ユ敹鏁版嵁锛堥潪闃诲锛�
+            //接收数据（非阻塞）
             virtual bool receive(Data &data) = 0;
             
-            //鑾峰彇UART璁惧鍙ユ焺
+            //获取UART设备句柄
             virtual UART_HandleTypeDef *get_handle() const = 0;
 
-            //鍙戦€佸崟涓瓧鑺�
+            //发送单个字节
             virtual bool transmit_byte(uint8_t byte) = 0;
 
-            //鎺ユ敹鍗曚釜瀛楄妭
+            //接收单个字节
             virtual bool receive_byte(uint8_t &byte) = 0;
 
-            //浣跨敤DMA鍙戦€佹暟鎹�
+            //使用DMA发送数据
             virtual bool transmit_dma(const Data &data) = 0;
 
-            // 浣跨敤DMA鎺ユ敹鏁版嵁
+            // 使用DMA接收数据
             virtual bool receive_dma(Data &data) = 0;
 
-            //璁剧疆DMA杩炵画鎺ユ敹骞朵娇鐢ㄧ┖闂蹭腑鏂娴�
+            //设置DMA连续接收并使用空闲中断检测
             virtual bool receive_dma_idle(Data &data) = 0;
 
-            //娓呮ORE閿欒锛堜覆鍙ｆ孩鍑猴級骞堕噸鏂板惎鍔―MA鎺ユ敹
+            //清楚ORE错误（串口溢出）并重新启动DMA接收
             virtual void clear_ore_error(Data &data) = 0;
     };
 
 /********************* INTERFACE_UART_BUS *********************/
-// UART璁惧ID鏋氫妇
+
+// UART设备ID枚举
+
 enum class UartDeviceId : uint8_t
 {
     HAL_UART1 = 0,
@@ -69,16 +73,20 @@ enum class UartDeviceId : uint8_t
     MAX_DEVICES
 };
 
-//uart鎬荤嚎鎶借薄鎺ュ彛
+
+//uart总线抽象接口
+
 class IUartBus
 {
     public:
         virtual ~IUartBus() = default;
 
-        // 鑾峰彇鎸囧畾UART璁惧
+
+        // 获取指定UART设备
         virtual IUartDevice *get_device(UartDeviceId id) = 0;
 
-        //鍏煎鏃PI锛堝簲鐢ㄧ▼搴忕紪绋嬫帴鍙ｏ級鐨勪究鎹锋柟娉�
+        //兼容旧API（应用程序编程接口）的便捷方法
+
         // IUartDevice &get_uart1()
         // {
         //     return get_device(UartDeviceId::HAL_UART1);
@@ -112,30 +120,34 @@ class IUartBus
         //     return get_device(UartDeviceId::HAL_UART8);
         // }        
 
-        // 妫€鏌ユ寚瀹歎ART璁惧鏄惁瀛樺湪
+
+        // 检查指定UART设备是否存在
         virtual bool has_device(UartDeviceId id) const = 0;
 };
 
-//鑾峰彇UART鎬荤嚎鍗曚緥瀹炰緥
+//获取UART总线单例实例
+
 IUartBus &get_uart_bus_instance();
 
 /********************* IMPL_UART_DEVICE *********************/
 
-//UART纭欢璁惧瀹炵幇绫�
+
+//UART硬件设备实现类
 class UartDevice : public IUartDevice
 {
     public:
-        //鏋勯€犲嚱鏁帮紝鍒濆鍖朥ART璁惧
+        //构造函数，初始化UART设备
         explicit UartDevice(const UartDevice &) = delete;
 
-        //鏋愭瀯鍑芥暟
+        //析构函数
         ~UartDevice() override = default;
 
-        //绂佹鎷疯礉缁撴瀯鍜岃祴鍊兼搷浣�
+        //禁止拷贝结构和赋值操作
         UartDevice(const UartDevice &) = delete;
         UartDevice &operator=(const UartDevice &) = delete;
 
-        //瀹炵幇IUartDevice鎺ュ彛
+        //实现IUartDevice接口
+
         void init() override;
         void start() override;
         bool transmit(const Data &data) override;
@@ -150,13 +162,54 @@ class UartDevice : public IUartDevice
 
     private:
         UART_HandleTypeDef *handle_;
-        //鎺ユ敹鐘舵€佹爣蹇�
+
+        //接收状态标志
         bool is_receiving_;
-        //DMA浼犺緭鐘舵€�
+        //DMA传输状态
         bool is_dma_tx_ongoing_;        
         bool is_dma_rx_ongoing_;
-        //绌洪棽涓柇鐘舵€�
+        //空闲中断状态
         bool is_idle_enabled_;
+};
+
+//UART总线管理实现类
+class UartBus : public IUartBus
+{
+    public:
+        //获取单例实例
+        static UartBus &instance();
+
+        //析构函数
+        ~UartBus() override = default;
+
+        //实现IUartBus接口
+        IUartDevice &get_device(UartDeviceId id) override;
+        bool has_device(UartDeviceId id) const override;
+
+        //初始化UART总线
+        void init();
+
+    private:
+        //私有构造函数（单例模式）
+        UartBus();
+
+        //注册一个UART设备
+        void register_device(UartDeviceId id, UartDevice *device);
+
+        //是否已初始化标志
+        bool initalized_ = false;
+
+        //禁止拷贝构造和赋值操作
+        UartBus(const UartBus &) = delete;
+        UartBus &operator = (const UartBus &) = delete;
+
+        //使用指针数组代替固定成员变量
+        UartDevice *devices_[(size_t)UartDeviceId::MAX_DEVICES] = {nullptr};
+
+        //实际设备实例
+        UartDevice uart6_;
+
+
 };
 
 //UART鎬荤嚎绠＄悊瀹炵幇绫�
