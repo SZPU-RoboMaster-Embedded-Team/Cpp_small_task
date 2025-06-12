@@ -1,9 +1,13 @@
+#ifndef _HAL_SERIAL_PORT_HPP_
+#define _HAL_SERIAL_PORT_HPP_
+
 #include <math.h>
 #include <usart.h>
 
 /********************* INTERFACE_UART_DEVICE *********************/
 namespace HAL::UART
 {
+
     // UART数据结构体
     struct Data
     {
@@ -12,6 +16,7 @@ namespace HAL::UART
     };
 
     // UART设备抽象接口
+
     class IUartDevice
     {
         public:
@@ -52,7 +57,9 @@ namespace HAL::UART
     };
 
 /********************* INTERFACE_UART_BUS *********************/
+
 // UART设备ID枚举
+
 enum class UartDeviceId : uint8_t
 {
     HAL_UART1 = 0,
@@ -66,16 +73,20 @@ enum class UartDeviceId : uint8_t
     MAX_DEVICES
 };
 
+
 //uart总线抽象接口
+
 class IUartBus
 {
     public:
         virtual ~IUartBus() = default;
 
+
         // 获取指定UART设备
         virtual IUartDevice *get_device(UartDeviceId id) = 0;
 
         //兼容旧API（应用程序编程接口）的便捷方法
+
         // IUartDevice &get_uart1()
         // {
         //     return get_device(UartDeviceId::HAL_UART1);
@@ -109,14 +120,17 @@ class IUartBus
         //     return get_device(UartDeviceId::HAL_UART8);
         // }        
 
+
         // 检查指定UART设备是否存在
         virtual bool has_device(UartDeviceId id) const = 0;
 };
 
 //获取UART总线单例实例
+
 IUartBus &get_uart_bus_instance();
 
 /********************* IMPL_UART_DEVICE *********************/
+
 
 //UART硬件设备实现类
 class UartDevice : public IUartDevice
@@ -133,6 +147,7 @@ class UartDevice : public IUartDevice
         UartDevice &operator=(const UartDevice &) = delete;
 
         //实现IUartDevice接口
+
         void init() override;
         void start() override;
         bool transmit(const Data &data) override;
@@ -147,6 +162,7 @@ class UartDevice : public IUartDevice
 
     private:
         UART_HandleTypeDef *handle_;
+
         //接收状态标志
         bool is_receiving_;
         //DMA传输状态
@@ -193,7 +209,47 @@ class UartBus : public IUartBus
         //实际设备实例
         UartDevice uart6_;
 
+
+};
+
+//UART鎬荤嚎绠＄悊瀹炵幇绫�
+class UartBus : public IUartBus
+{
+    public:
+        //鑾峰彇鍗曚緥瀹炰緥
+        static UartBus &instance();
+
+        //鏋愭瀯鍑芥暟
+        ~UartBus() override = default;
+
+        //瀹炵幇IUartBus鎺ュ彛
+        IUartDevice &get_device(UartDeviceId id) override;
+        bool has_device(UartDeviceId id) const override;
+
+        //鍒濆鍖朥ART鎬荤嚎
+        void init();
+
+    private:
+        //绉佹湁鏋勯€犲嚱鏁帮紙鍗曚緥妯″紡锛�
+        UartBus();
+
+        //娉ㄥ唽涓€涓猆ART璁惧
+        void register_device(UartDeviceId id, UartDevice *device);
+
+        //鏄惁宸插垵濮嬪寲鏍囧織
+        bool initalized_ = false;
+
+        //绂佹鎷疯礉鏋勯€犲拰璧嬪€兼搷浣�
+        UartBus(const UartBus &) = delete;
+        UartBus &operator = (const UartBus &) = delete;
+
+        //浣跨敤鎸囬拡鏁扮粍浠ｆ浛鍥哄畾鎴愬憳鍙橀噺
+        UartDevice *devices_[(size_t)UartDeviceId::MAX_DEVICES] = {nullptr};
+
+        //瀹為檯璁惧瀹炰緥
+        UartDevice uart6_;
+
 };
 }
 
-
+#endif

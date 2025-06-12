@@ -1,47 +1,115 @@
 #ifndef _DJI_MOTOR_HPP_
 #define _DJI_MOTOR_HPP_ 
 
-#include <can.h>
-#include <cstdint>
-#include <cstring>
 
-namespace BSP::Motor::DJI
+#include <hal_can.hpp>
+namespace BSP::Motor
 {
-    //Òª¼ÓÉäÆµ
-    struct Parameters
-    {
-        double reduction_ratio;      // ¼õËÙ±È
-        double torque_constant;      // Á¦¾Ø³£Êı (Nm/A)
-        double feedback_current_max; // ·´À¡×î´óµçÁ÷ (A)
-        double current_max;          // ×î´óµçÁ÷ (A)
-        double encoder_resolution;   // ±àÂëÆ÷·Ö±æÂÊ
-
-        // ×Ô¶¯¼ÆËãµÄ²ÎÊı
-        double encoder_to_deg; // ±àÂëÆ÷Öµ×ª½Ç¶ÈÏµÊı
-        double encoder_to_rpm;
-        double rpm_to_radps;                    // RPM×ª½ÇËÙ¶ÈÏµÊı
-        double current_to_torque_coefficient;   // µçÁ÷×ªÅ¤¾ØÏµÊı
-        double feedback_to_current_coefficient; // ·´À¡µçÁ÷×ªµçÁ÷ÏµÊı
-        double deg_to_real;                     // ½Ç¶È×ªÊµ¼Ê½Ç¶ÈÏµÊı
-
-        static constexpr double deg_to_rad = 0.017453292519611;
-        static constexpr double rad_to_deg = 1 / 0.017453292519611;
-
-         // ¹¹Ôìº¯Êı´ø²ÎÊı¼ÆËã
-        Parameters(double rr, double tc, double fmc, double mc, double er)
-            : reduction_ratio(rr), torque_constant(tc), feedback_current_max(fmc), current_max(mc), encoder_resolution(er)
+template <uint8_t N> class MotorBase
+{
+    protected:
+        struct UnitData
         {
-            constexpr double PI = 3.14159265358979323846;
-            encoder_to_deg = 360.0 / encoder_resolution;
-            rpm_to_radps = 1 / reduction_ratio / 60 * 2 * PI;
-            encoder_to_rpm = 1 / reduction_ratio;
-            current_to_torque_coefficient = reduction_ratio * torque_constant / feedback_current_max * current_max;
-            feedback_to_current_coefficient = current_max / feedback_current_max;
-            deg_to_real = 1 / reduction_ratio;
-        }
-    };
+            double angle_Deg; // å•ä½åº¦è§’åº¦
+            double angle_Rad; // å•ä½å¼§åº¦è§’åº¦
 
-    
+            double velocity_Rad; // å•ä½å¼§åº¦é€Ÿåº¦
+            double velocity_Rpm; // å•ä½rpm
+
+            double current_A;     // å•ä½å®‰åŸ¹
+            double torque_Nm;     // å•ä½ç‰›ç±³
+            double temperature_C; // å•ä½æ‘„æ°åº¦
+
+            double last_angle;
+            double add_angle;
+        };
+
+        //å›½é™…å•ä½æ•°æ®
+        UnitData unit_data_[N];
+        //è®¾å¤‡åœ¨çº¿ç›‘æµ‹
+        BSP::WATCH_STATE::StateWatch state_watch_[N];
+
+        virtual void Pare(const HAL::CAN::Frame &frame) = 0;
+
+    public:
+        //è·å–è§’åº¦
+        float getAngleDeg(uint8_t id)
+        {
+            return this->unit_data_[id - 1].angle_Deg;
+        }
+
+        //è·å–å¼§åº¦
+        float getAngleRad(uint8_t id)
+        {
+            return this->unit_data_[id - 1].angle_Rad;
+        }
+
+        //è·å–ä¸Šä¸€æ¬¡è§’åº¦
+        float getLastAngleDeg(uint8_t id)
+        {
+            return this->unit_data_[id - 1].last_angle;
+        }
+        
+        //è·å–å¢é‡è§’åº¦
+        float getAddAngleDeg(uint8_t id)
+        {
+            return this->unit_data_[id - 1].add_angle;
+        }
+        
+        //è·å–å¢é‡å¼§åº¦
+        float getAddAngleRad(uint8_t id)
+        {
+            return this->unit_data_[id - 1].add_angle;
+        }
+
+        //è·å–é€Ÿåº¦    å•ä½ï¼š(rad/s) è½¬è½´
+        float getVelocityRads(uint8_t id)
+        {
+            return this->unit_data_[id - 1].velocity_Rad;
+        }
+
+        //è·å–é€Ÿåº¦    å•ä½ï¼š(rpm) è½¬å­ 
+        float getVelocityRpm(uint8_t id)
+        {
+            return this->unit_data_[id - 1].velocity_Rpm;
+        }
+        
+        //è·å–ç”µæµå€¼    å•ä½ï¼š(A)
+        float getCelocityRpm(uint8_t id)
+        {
+            return this->unit_data_[id - 1].velocity_Rpm;
+        }
+
+        float getCurrent(uint8_t id)
+        {
+            return this->unit_data_[id - 1].current_A;
+        }
+
+        //è·å–åŠ›çŸ©    å•ä½ï¼š(Nm)
+        float getTorque(uint8_t id)
+        {
+            return this->unit_data_[id - 1].torque_Nm;
+        }
+
+        //è·å–æ¸©åº¦    å•ä½ï¼š(Â°)
+        float getTemperature(uint8_t id)
+        {
+            return this->unit_data_[id - 1].temperature_C;
+        }
+
+        uint8_t getOfflineStatus()
+        {
+            for (uint8_t i = 0; i < N; i++)
+            {
+                if (this->state_watch_[i].getStatus() != BSP::WATCH_STATE::Status::ONLINE)
+                {
+                    return i + 1; // è¿”å›æ‰çº¿ç”µæœºçš„ç¼–å·ï¼ˆä»1å¼€å§‹è®¡æ•°ï¼‰
+                }
+            }
+
+            return 0; // æ‰€æœ‰ç”µæœºéƒ½åœ¨çº¿
+        }
+};
 }
 
 #endif
